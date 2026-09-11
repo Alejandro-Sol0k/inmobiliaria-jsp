@@ -15,7 +15,7 @@ public final class ReportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (!isAdmin(request)) {
+        if (!isManager(request)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "No tienes permiso para consultar reportes.");
             return;
         }
@@ -32,8 +32,8 @@ public final class ReportServlet extends HttpServlet {
         request.getRequestDispatcher("/app/reportes.jsp").forward(request, response);
     }
 
-    private static boolean isAdmin(HttpServletRequest request) {
+    private static boolean isManager(HttpServletRequest request) {
         Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
-        return "ADMINISTRADOR".equals(role);
+        return "INMOBILIARIA".equals(role) || "ADMINISTRADOR".equals(role);
     }
 }

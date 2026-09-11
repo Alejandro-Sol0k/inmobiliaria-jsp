@@ -58,13 +58,13 @@ public final class OperationServlet extends HttpServlet {
                 redirect(response, request, "solicitud=ok");
                 return;
             }
-            if (isAdmin(request) && "estadoCita".equals(action)) {
+            if (isManager(request) && "estadoCita".equals(action)) {
                 updateStatus(value(request, "estado"), APPOINTMENT_STATUSES);
                 operationDao.updateAppointmentStatus(integer(request, "idCita"), value(request, "estado").toUpperCase());
                 redirect(response, request, "actualizado=ok");
                 return;
             }
-            if (isAdmin(request) && "estadoSolicitud".equals(action)) {
+            if (isManager(request) && "estadoSolicitud".equals(action)) {
                 updateStatus(value(request, "estado"), REQUEST_STATUSES);
                 operationDao.updateRequestStatus(integer(request, "idSolicitud"), value(request, "estado").toUpperCase());
                 redirect(response, request, "actualizado=ok");
@@ -81,12 +81,12 @@ public final class OperationServlet extends HttpServlet {
     private void loadPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int userId = userId(request);
-        boolean admin = isAdmin(request);
+        boolean manager = isManager(request);
         try {
             request.setAttribute("propiedades", propertyDao.findPublic("", "", "", null));
-            request.setAttribute("citas", operationDao.findAppointments(userId, admin));
-            request.setAttribute("solicitudes", operationDao.findRequests(userId, admin));
-            request.setAttribute("documentos", documentDao.findDocuments(userId, admin));
+            request.setAttribute("citas", operationDao.findAppointments(userId, manager));
+            request.setAttribute("solicitudes", operationDao.findRequests(userId, manager));
+            request.setAttribute("documentos", documentDao.findDocuments(userId, manager));
         } catch (Exception exception) {
             request.setAttribute("propiedades", Collections.emptyList());
             request.setAttribute("citas", Collections.emptyList());
@@ -95,7 +95,7 @@ public final class OperationServlet extends HttpServlet {
             request.setAttribute("errorOperaciones", "No fue posible cargar las citas y solicitudes.");
             getServletContext().log("Error cargando operaciones", exception);
         }
-        request.setAttribute("esGestor", admin);
+        request.setAttribute("esGestor", manager);
         request.setAttribute("tituloPagina", "Citas y solicitudes");
         request.getRequestDispatcher("/app/operaciones.jsp").forward(request, response);
     }
@@ -111,9 +111,9 @@ public final class OperationServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/app/operaciones?" + query);
     }
 
-    private static boolean isAdmin(HttpServletRequest request) {
+    private static boolean isManager(HttpServletRequest request) {
         Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
-        return "ADMINISTRADOR".equals(role);
+        return "INMOBILIARIA".equals(role) || "ADMINISTRADOR".equals(role);
     }
 
     private static int userId(HttpServletRequest request) {

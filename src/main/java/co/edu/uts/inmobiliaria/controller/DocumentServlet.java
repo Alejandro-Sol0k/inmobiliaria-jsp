@@ -26,7 +26,7 @@ public final class DocumentServlet extends HttpServlet {
             throws IOException, ServletException {
         try {
             if ("estadoDocumento".equals(value(request, "accion"))) {
-                if (!isAdmin(request)) {
+                if (!isManager(request)) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     return;
                 }
@@ -79,9 +79,9 @@ public final class DocumentServlet extends HttpServlet {
         return ((Number) request.getSession(false).getAttribute("usuarioId")).intValue();
     }
 
-    private static boolean isAdmin(HttpServletRequest request) {
+    private static boolean isManager(HttpServletRequest request) {
         Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
-        return "ADMINISTRADOR".equals(role);
+        return "INMOBILIARIA".equals(role) || "ADMINISTRADOR".equals(role);
     }
 
     private static String value(HttpServletRequest request, String name) {
