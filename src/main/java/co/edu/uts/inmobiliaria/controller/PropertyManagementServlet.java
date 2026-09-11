@@ -35,6 +35,11 @@ public final class PropertyManagementServlet extends HttpServlet {
         }
         request.setCharacterEncoding("UTF-8");
         try {
+            if ("desactivar".equals(request.getParameter("accion"))) {
+                propertyDao.deactivate(Integer.parseInt(value(request, "idPropiedad")));
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?desactivada=ok");
+                return;
+            }
             propertyDao.create(value(request, "titulo"), value(request, "ciudad"), value(request, "tipo"),
                     value(request, "operacion").toUpperCase(), value(request, "matricula"), value(request, "direccion"),
                     value(request, "descripcion"), decimal(request, "precio"), integer(request, "habitaciones"),
