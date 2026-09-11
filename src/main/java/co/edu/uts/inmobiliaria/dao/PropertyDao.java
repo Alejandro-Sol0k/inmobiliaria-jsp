@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,29 +63,70 @@ public final class PropertyDao {
 
     public void create(String title, String city, String type, String operation,
             String registration, String address, String description, BigDecimal price,
-            int bedrooms, int bathrooms, BigDecimal area) throws SQLException {
+            int bedrooms, int bathrooms, BigDecimal area, String imageUrl,
+            List<String> featureNames) throws SQLException {
         String idCompanySql = "SELECT id_inmobiliaria FROM inmobiliaria ORDER BY id_inmobiliaria LIMIT 1";
         String idCitySql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
         String idTypeSql = "SELECT id_tipo FROM tipo_propiedad WHERE nombre = ?";
         String insertSql = "INSERT INTO propiedad (id_inmobiliaria, id_ciudad, id_tipo, matricula_inmobiliaria, titulo, descripcion, direccion, precio, operacion, habitaciones, banos, area_m2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = Database.getConnection()) {
-            int companyId = findId(connection, idCompanySql, null, "No existe una inmobiliaria configurada.");
-            int cityId = findId(connection, idCitySql, city, "La ciudad seleccionada no existe.");
-            int typeId = findId(connection, idTypeSql, type, "El tipo de propiedad seleccionado no existe.");
-            try (PreparedStatement statement = connection.prepareStatement(insertSql)) {
-                statement.setInt(1, companyId);
-                statement.setInt(2, cityId);
-                statement.setInt(3, typeId);
-                statement.setString(4, registration);
-                statement.setString(5, title);
-                statement.setString(6, description);
-                statement.setString(7, address);
-                statement.setBigDecimal(8, price);
-                statement.setString(9, operation);
-                statement.setInt(10, bedrooms);
-                statement.setInt(11, bathrooms);
-                statement.setBigDecimal(12, area);
-                statement.executeUpdate();
+            connection.setAutoCommit(false);
+            try {
+                int companyId = findId(connection, idCompanySql, null, "No existe una inmobiliaria configurada.");
+                int cityId = findId(connection, idCitySql, city, "La ciudad seleccionada no existe.");
+                int typeId = findId(connection, idTypeSql, type, "El tipo de propiedad seleccionado no existe.");
+                int propertyId;
+                try (PreparedStatement statement = connection.prepareStatement(insertSql,
+                        Statement.RETURN_GENERATED_KEYS)) {
+                    statement.setInt(1, companyId);
+                    statement.setInt(2, cityId);
+                    statement.setInt(3, typeId);
+                    statement.setString(4, registration);
+                    statement.setString(5, title);
+                    statement.setString(6, description);
+                    statement.setString(7, address);
+                    statement.setBigDecimal(8, price);
+                    statement.setString(9, operation);
+                    statement.setInt(10, bedrooms);
+                    statement.setInt(11, bathrooms);
+                    statement.setBigDecimal(12, area);
+                    statement.executeUpdate();
+                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                        if (!generatedKeys.next()) {
+                            throw new SQLException("No fue posible obtener la propiedad creada.");
+                        }
+                        propertyId = generatedKeys.getInt(1);
+                    }
+                }
+
+                if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+                    try (PreparedStatement statement = connection.prepareStatement(
+                            "INSERT INTO imagen_propiedad (id_propiedad, url, texto_alternativo, es_principal) VALUES (?, ?, ?, TRUE)")) {
+                        statement.setInt(1, propertyId);
+                        statement.setString(2, imageUrl.trim());
+                        statement.setString(3, title);
+                        statement.executeUpdate();
+                    }
+                }
+
+                if (featureNames != null && !featureNames.isEmpty()) {
+                    try (PreparedStatement statement = connection.prepareStatement(
+                            "INSERT IGNORE INTO propiedad_caracteristica (id_propiedad, id_caracteristica) "
+                            + "SELECT ?, id_caracteristica FROM caracteristica WHERE nombre = ?")) {
+                        for (String featureName : featureNames) {
+                            if (featureName != null && !featureName.trim().isEmpty()) {
+                                statement.setInt(1, propertyId);
+                                statement.setString(2, featureName.trim());
+                                statement.addBatch();
+                            }
+                        }
+                        statement.executeBatch();
+                    }
+                }
+                connection.commit();
+            } catch (SQLException exception) {
+                connection.rollback();
+                throw exception;
             }
         }
     }

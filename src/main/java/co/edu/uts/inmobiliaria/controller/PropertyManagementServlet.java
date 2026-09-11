@@ -4,6 +4,7 @@ import co.edu.uts.inmobiliaria.dao.PropertyDao;
 import co.edu.uts.inmobiliaria.model.Property;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -43,7 +44,10 @@ public final class PropertyManagementServlet extends HttpServlet {
             propertyDao.create(value(request, "titulo"), value(request, "ciudad"), value(request, "tipo"),
                     value(request, "operacion").toUpperCase(), value(request, "matricula"), value(request, "direccion"),
                     value(request, "descripcion"), decimal(request, "precio"), integer(request, "habitaciones"),
-                    integer(request, "banos"), decimal(request, "area"));
+                    integer(request, "banos"), decimal(request, "area"), value(request, "imagenUrl"),
+                    request.getParameterValues("caracteristicas") == null
+                            ? Collections.<String>emptyList()
+                            : Arrays.asList(request.getParameterValues("caracteristicas")));
             response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?creada=ok");
         } catch (Exception exception) {
             request.setAttribute("errorGestion", exception.getMessage() == null

@@ -56,6 +56,7 @@ body {
 .dashboard-hero { background: linear-gradient(120deg, var(--brand), var(--brand-blue)); color: #fff; border-radius: 1.25rem; }
 .dashboard-card { border: 1px solid #e4ebf1 !important; transition: transform .2s ease, border-color .2s ease; }
 .dashboard-card:hover { transform: translateY(-3px); border-color: rgba(213,160,68,.65) !important; }
+.profile-brand-panel { background: linear-gradient(150deg, var(--brand), var(--brand-2)); }
 .gold-line { width: 62px; height: 3px; background: var(--accent); border-radius: 99px; }
 
 @media (max-width: 767.98px) {
