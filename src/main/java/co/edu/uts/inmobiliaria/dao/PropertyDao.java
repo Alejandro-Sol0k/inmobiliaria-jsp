@@ -17,6 +17,7 @@ public final class PropertyDao {
         StringBuilder sql = new StringBuilder(
                 "SELECT p.id_propiedad, p.titulo, c.nombre AS ciudad, tp.nombre AS tipo, "
                 + "p.operacion, p.precio, p.habitaciones, p.banos, p.area_m2, "
+                + "p.matricula_inmobiliaria, p.descripcion, p.direccion, "
                 + "(SELECT ip.url FROM imagen_propiedad ip WHERE ip.id_propiedad = p.id_propiedad "
                 + "ORDER BY ip.es_principal DESC, ip.id_imagen LIMIT 1) AS imagen "
                 + "FROM propiedad p INNER JOIN ciudad c ON c.id_ciudad = p.id_ciudad "
@@ -54,7 +55,8 @@ public final class PropertyDao {
                             result.getString("tipo"), result.getString("operacion"),
                             result.getBigDecimal("precio"), result.getInt("habitaciones"),
                             result.getInt("banos"), result.getBigDecimal("area_m2"),
-                            result.getString("imagen")));
+                            result.getString("imagen"), result.getString("matricula_inmobiliaria"),
+                            result.getString("descripcion"), result.getString("direccion")));
                 }
             }
         }
@@ -137,6 +139,105 @@ public final class PropertyDao {
                         "UPDATE propiedad SET disponible = FALSE WHERE id_propiedad = ?")) {
             statement.setInt(1, propertyId);
             statement.executeUpdate();
+        }
+    }
+
+    public void update(int propertyId, String title, String city, String type, String operation,
+            String registration, String address, String description, BigDecimal price,
+            int bedrooms, int bathrooms, BigDecimal area, String imageUrl,
+            List<String> featureNames) throws SQLException {
+        String idCitySql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
+        String idTypeSql = "SELECT id_tipo FROM tipo_propiedad WHERE nombre = ?";
+        String updateSql = "UPDATE propiedad SET id_ciudad = ?, id_tipo = ?, matricula_inmobiliaria = ?, "
+                + "titulo = ?, descripcion = ?, direccion = ?, precio = ?, operacion = ?, habitaciones = ?, "
+                + "banos = ?, area_m2 = ? WHERE id_propiedad = ? AND disponible = TRUE";
+        try (Connection connection = Database.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                int cityId = findId(connection, idCitySql, city, "La ciudad seleccionada no existe.");
+                int typeId = findId(connection, idTypeSql, type, "El tipo de propiedad seleccionado no existe.");
+                try (PreparedStatement statement = connection.prepareStatement(updateSql)) {
+                    statement.setInt(1, cityId);
+                    statement.setInt(2, typeId);
+                    statement.setString(3, registration);
+                    statement.setString(4, title);
+                    statement.setString(5, description);
+                    statement.setString(6, address);
+                    statement.setBigDecimal(7, price);
+                    statement.setString(8, operation);
+                    statement.setInt(9, bedrooms);
+                    statement.setInt(10, bathrooms);
+                    statement.setBigDecimal(11, area);
+                    statement.setInt(12, propertyId);
+                    if (statement.executeUpdate() == 0) {
+                        throw new SQLException("La propiedad no existe o ya no está activa.");
+                    }
+                }
+                if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+                    try (PreparedStatement delete = connection.prepareStatement(
+                            "DELETE FROM imagen_propiedad WHERE id_propiedad = ?")) {
+                        delete.setInt(1, propertyId);
+                        delete.executeUpdate();
+                    }
+                    insertImage(connection, propertyId, imageUrl, title);
+                }
+                replaceFeatures(connection, propertyId, featureNames);
+                connection.commit();
+            } catch (SQLException exception) {
+                connection.rollback();
+                throw exception;
+            }
+        }
+    }
+
+    public List<String> findFeatureNames(int propertyId) throws SQLException {
+        List<String> features = new ArrayList<>();
+        String sql = "SELECT c.nombre FROM caracteristica c INNER JOIN propiedad_caracteristica pc "
+                + "ON pc.id_caracteristica = c.id_caracteristica WHERE pc.id_propiedad = ? ORDER BY c.nombre";
+        try (Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, propertyId);
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    features.add(result.getString("nombre"));
+                }
+            }
+        }
+        return features;
+    }
+
+    private void insertImage(Connection connection, int propertyId, String imageUrl, String title)
+            throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO imagen_propiedad (id_propiedad, url, texto_alternativo, es_principal) VALUES (?, ?, ?, TRUE)")) {
+            statement.setInt(1, propertyId);
+            statement.setString(2, imageUrl.trim());
+            statement.setString(3, title);
+            statement.executeUpdate();
+        }
+    }
+
+    private void replaceFeatures(Connection connection, int propertyId, List<String> featureNames)
+            throws SQLException {
+        try (PreparedStatement delete = connection.prepareStatement(
+                "DELETE FROM propiedad_caracteristica WHERE id_propiedad = ?")) {
+            delete.setInt(1, propertyId);
+            delete.executeUpdate();
+        }
+        if (featureNames == null || featureNames.isEmpty()) {
+            return;
+        }
+        try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT IGNORE INTO propiedad_caracteristica (id_propiedad, id_caracteristica) "
+                + "SELECT ?, id_caracteristica FROM caracteristica WHERE nombre = ?")) {
+            for (String featureName : featureNames) {
+                if (featureName != null && !featureName.trim().isEmpty()) {
+                    statement.setInt(1, propertyId);
+                    statement.setString(2, featureName.trim());
+                    statement.addBatch();
+                }
+            }
+            statement.executeBatch();
         }
     }
 

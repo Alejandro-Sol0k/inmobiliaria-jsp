@@ -44,7 +44,8 @@ public final class PropertyManagementServlet extends HttpServlet {
         }
         request.setCharacterEncoding("UTF-8");
         try {
-            if ("desactivar".equals(request.getParameter("accion"))) {
+            String action = value(request, "accion");
+            if ("desactivar".equals(action)) {
                 propertyDao.deactivate(Integer.parseInt(value(request, "idPropiedad")));
                 response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?desactivada=ok");
                 return;
@@ -54,17 +55,26 @@ public final class PropertyManagementServlet extends HttpServlet {
             if (imagePart != null && imagePart.getSize() > 0) {
                 imageUrl = saveUploadedImage(imagePart, request);
             }
+            List<String> features = request.getParameterValues("caracteristicas") == null
+                    ? Collections.<String>emptyList()
+                    : Arrays.asList(request.getParameterValues("caracteristicas"));
+            if ("actualizar".equals(action)) {
+                propertyDao.update(Integer.parseInt(value(request, "idPropiedad")), value(request, "titulo"),
+                        value(request, "ciudad"), value(request, "tipo"), value(request, "operacion").toUpperCase(),
+                        value(request, "matricula"), value(request, "direccion"), value(request, "descripcion"),
+                        decimal(request, "precio"), integer(request, "habitaciones"), integer(request, "banos"),
+                        decimal(request, "area"), imageUrl, features);
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?actualizada=ok");
+                return;
+            }
             propertyDao.create(value(request, "titulo"), value(request, "ciudad"), value(request, "tipo"),
                     value(request, "operacion").toUpperCase(), value(request, "matricula"), value(request, "direccion"),
                     value(request, "descripcion"), decimal(request, "precio"), integer(request, "habitaciones"),
-                    integer(request, "banos"), decimal(request, "area"), imageUrl,
-                    request.getParameterValues("caracteristicas") == null
-                            ? Collections.<String>emptyList()
-                            : Arrays.asList(request.getParameterValues("caracteristicas")));
+                    integer(request, "banos"), decimal(request, "area"), imageUrl, features);
             response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?creada=ok");
         } catch (Exception exception) {
             request.setAttribute("errorGestion", exception.getMessage() == null
-                    ? "No fue posible crear la propiedad." : exception.getMessage());
+                    ? "No fue posible guardar la propiedad." : exception.getMessage());
             loadPage(request, response);
         }
     }
@@ -74,6 +84,17 @@ public final class PropertyManagementServlet extends HttpServlet {
         try {
             List<Property> properties = propertyDao.findPublic("", "", "", null);
             request.setAttribute("propiedades", properties);
+            String editId = value(request, "editar");
+            if (!editId.isEmpty()) {
+                int propertyId = Integer.parseInt(editId);
+                for (Property property : properties) {
+                    if (property.getId() == propertyId) {
+                        request.setAttribute("propiedadEditar", property);
+                        request.setAttribute("caracteristicasEditar", propertyDao.findFeatureNames(propertyId));
+                        break;
+                    }
+                }
+            }
         } catch (Exception exception) {
             request.setAttribute("propiedades", Collections.emptyList());
             request.setAttribute("errorGestion", "No fue posible consultar las propiedades.");

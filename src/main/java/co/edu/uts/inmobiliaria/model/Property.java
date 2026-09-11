@@ -13,9 +13,13 @@ public final class Property {
     private final int bathrooms;
     private final BigDecimal area;
     private final String imageUrl;
+    private final String registration;
+    private final String description;
+    private final String address;
 
     public Property(int id, String title, String city, String type, String operation,
-            BigDecimal price, int bedrooms, int bathrooms, BigDecimal area, String imageUrl) {
+            BigDecimal price, int bedrooms, int bathrooms, BigDecimal area, String imageUrl,
+            String registration, String description, String address) {
         this.id = id;
         this.title = title;
         this.city = city;
@@ -26,6 +30,9 @@ public final class Property {
         this.bathrooms = bathrooms;
         this.area = area;
         this.imageUrl = imageUrl;
+        this.registration = registration;
+        this.description = description;
+        this.address = address;
     }
 
     public int getId() { return id; }
@@ -38,4 +45,7 @@ public final class Property {
     public int getBathrooms() { return bathrooms; }
     public BigDecimal getArea() { return area; }
     public String getImageUrl() { return imageUrl; }
+    public String getRegistration() { return registration; }
+    public String getDescription() { return description; }
+    public String getAddress() { return address; }
 }
