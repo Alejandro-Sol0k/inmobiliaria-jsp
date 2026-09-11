@@ -12,7 +12,7 @@
 
 ## Sprint 2 - Catalogo y perfiles
 
-- [ ] CRUD de propiedades.
+- [x] CRUD básico de propiedades con publicación y baja lógica.
 - [ ] Imagenes y caracteristicas.
 - [x] Buscador con filtros por ciudad, tipo, operacion y precio.
 - [ ] Perfil 1:1 del usuario.

@@ -16,7 +16,8 @@ public final class UserDao {
                 + "COALESCE(r.nombre, 'CLIENTE') AS rol "
                 + "FROM usuario u LEFT JOIN usuario_rol ur ON ur.id_usuario = u.id_usuario "
                 + "LEFT JOIN rol r ON r.id_rol = ur.id_rol "
-                + "WHERE u.correo = ? AND u.activo = TRUE LIMIT 1";
+                + "WHERE u.correo = ? AND u.activo = TRUE "
+                + "ORDER BY FIELD(r.nombre, 'ADMINISTRADOR', 'INMOBILIARIA', 'CLIENTE', 'VISITANTE') LIMIT 1";
         try (Connection connection = Database.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
