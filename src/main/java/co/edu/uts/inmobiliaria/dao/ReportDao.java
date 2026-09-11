@@ -20,6 +20,16 @@ public final class ReportDao {
         return grouped("SELECT estado AS etiqueta, COUNT(*) AS total FROM solicitud GROUP BY estado ORDER BY total DESC", "etiqueta");
     }
 
+    public List<ReportRow> requestsByAgency() throws SQLException {
+        return grouped("SELECT i.nombre AS etiqueta, COUNT(s.id_solicitud) AS total "
+                + "FROM inmobiliaria i "
+                + "LEFT JOIN propiedad p ON p.id_inmobiliaria = i.id_inmobiliaria "
+                + "LEFT JOIN solicitud s ON s.id_propiedad = p.id_propiedad "
+                + "GROUP BY i.id_inmobiliaria, i.nombre "
+                + "HAVING COUNT(s.id_solicitud) > 0 "
+                + "ORDER BY total DESC, i.nombre", "etiqueta");
+    }
+
     public List<ReportRow> appointmentsByStatus() throws SQLException {
         return grouped("SELECT estado AS etiqueta, COUNT(*) AS total FROM cita GROUP BY estado ORDER BY total DESC", "etiqueta");
     }

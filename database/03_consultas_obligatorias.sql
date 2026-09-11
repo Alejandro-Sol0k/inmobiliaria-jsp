@@ -35,3 +35,12 @@ WHERE p.disponible = TRUE
 GROUP BY c.id_ciudad, c.nombre
 HAVING COUNT(*) >= 1
 ORDER BY propiedades_activas DESC;
+
+-- Consulta funcional del reporte: solicitudes agrupadas por inmobiliaria.
+SELECT i.nombre AS inmobiliaria, COUNT(s.id_solicitud) AS total_solicitudes
+FROM inmobiliaria i
+LEFT JOIN propiedad p ON p.id_inmobiliaria = i.id_inmobiliaria
+LEFT JOIN solicitud s ON s.id_propiedad = p.id_propiedad
+GROUP BY i.id_inmobiliaria, i.nombre
+HAVING COUNT(s.id_solicitud) > 0
+ORDER BY total_solicitudes DESC, i.nombre;

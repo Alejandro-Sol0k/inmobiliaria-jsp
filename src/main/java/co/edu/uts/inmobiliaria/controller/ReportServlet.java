@@ -23,6 +23,7 @@ public final class ReportServlet extends HttpServlet {
             request.setAttribute("ciudades", reportDao.activePropertiesByCity());
             request.setAttribute("operaciones", reportDao.propertiesByOperation());
             request.setAttribute("solicitudesEstado", reportDao.requestsByStatus());
+            request.setAttribute("solicitudesInmobiliaria", reportDao.requestsByAgency());
             request.setAttribute("citasEstado", reportDao.appointmentsByStatus());
         } catch (Exception exception) {
             request.setAttribute("errorReportes", "No fue posible generar los reportes.");
