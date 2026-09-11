@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebFilter("/app/*")
 public final class AuthFilter implements Filter {
     @Override
+    public void init(javax.servlet.FilterConfig filterConfig) throws ServletException {
+        // No requiere configuracion adicional.
+    }
+
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -24,5 +29,10 @@ public final class AuthFilter implements Filter {
             return;
         }
         chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {
+        // No mantiene recursos propios.
     }
 }
