@@ -17,7 +17,7 @@
         <% if ("INMOBILIARIA".equals(session.getAttribute("usuarioRol")) || "ADMINISTRADOR".equals(session.getAttribute("usuarioRol"))) { %>
             <div class="col-md-6 col-xl-3"><div class="card dashboard-card soft-panel h-100"><div class="card-body p-4"><span class="text-accent fs-4">✦</span><h2 class="h5 mt-3">Gestión inmobiliaria</h2><p class="text-secondary">Publica propiedades y administra el inventario disponible.</p><a class="btn btn-sm btn-accent" href="<%= request.getContextPath() %>/app/gestion-propiedades">Gestionar</a></div></div></div>
         <% } %>
-        <div class="col-md-6 col-xl-3"><div class="card dashboard-card soft-panel h-100"><div class="card-body p-4"><span class="text-accent fs-4">◷</span><h2 class="h5 mt-3">Citas y solicitudes</h2><p class="text-secondary">Agenda visitas y consulta el avance de tus trámites.</p><span class="badge text-bg-light">Sprint 3</span></div></div></div>
+        <div class="col-md-6 col-xl-3"><div class="card dashboard-card soft-panel h-100"><div class="card-body p-4"><span class="text-accent fs-4">◷</span><h2 class="h5 mt-3">Citas y solicitudes</h2><p class="text-secondary">Agenda visitas y consulta el avance de tus trámites.</p><a class="btn btn-sm btn-accent" href="<%= request.getContextPath() %>/app/operaciones">Ver operaciones</a></div></div></div>
     </div>
 </main>
 <%@ include file="/WEB-INF/jspf/pie.jspf" %>

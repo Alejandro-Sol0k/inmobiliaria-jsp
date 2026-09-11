@@ -20,7 +20,7 @@
 
 ## Sprint 3 - Operacion y cierre
 
-- [ ] Citas y solicitudes.
+- [x] Citas y solicitudes.
 - [ ] Documentos y favoritos.
 - [ ] Reportes SQL con joins y agregaciones.
 - [ ] Pruebas, despliegue y documentacion final.
