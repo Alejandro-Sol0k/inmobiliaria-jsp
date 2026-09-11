@@ -13,8 +13,9 @@
 ## Sprint 2 - Catalogo y perfiles
 
 - [x] CRUD básico de propiedades con publicación y baja lógica.
-- [x] Imagenes y caracteristicas.
+- [x] Imagenes, galería y características.
 - [x] Buscador con filtros por ciudad, tipo, operacion y precio.
+- [x] Detalle público de propiedad con galería y características.
 - [x] Perfil 1:1 del usuario.
 - [x] Dashboards diferenciados.
 - [x] Panel administrativo de usuarios, roles y catálogos.
@@ -23,5 +24,5 @@
 
 - [x] Citas y solicitudes.
 - [x] Documentos y favoritos.
-- [x] Reportes SQL con joins y agregaciones.
+- [x] Reportes SQL con joins, agrupaciones, solicitudes por inmobiliaria y agregaciones.
 - [ ] Pruebas, despliegue y documentacion final.
