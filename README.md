@@ -1,4 +1,4 @@
-# Inmobiliaria UTS - JSP/JSPF
+# Altaltium Real Estate - JSP/JSPF
 
 Proyecto web academico para administrar una inmobiliaria, construido desde cero con JSP, JSPF, JDBC, MySQL, HTML5, CSS3, JavaScript y Bootstrap.
 

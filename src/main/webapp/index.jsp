@@ -12,10 +12,11 @@
                 <div class="col-lg-7">
                     <span class="badge rounded-pill text-bg-warning mb-3">Encuentra tu proximo espacio</span>
                     <h1 class="display-4 fw-bold">Propiedades que se sienten como hogar.</h1>
-                    <p class="lead mt-3 mb-4">Explora inmuebles seleccionados en Bucaramanga y su area metropolitana con el respaldo de Inmobiliaria UTS.</p>
+                    <p class="lead mt-3 mb-4">Explora inmuebles seleccionados en Bucaramanga y su área metropolitana con el respaldo de Altaltium Real Estate.</p>
             <a class="btn btn-accent btn-lg px-4" href="<%= request.getContextPath() %>/propiedades">Explorar propiedades</a>
                 </div>
                 <div class="col-lg-5">
+                    <div class="text-center mb-4"><img class="hero-logo" src="<%= request.getContextPath() %>/assets/images/altaltium-logo.png" alt="Altaltium Real Estate"></div>
                     <div class="hero-card rounded-4 p-4 shadow-lg">
                         <p class="text-uppercase small fw-semibold mb-3">Busqueda rapida</p>
                         <form action="<%= request.getContextPath() %>/index.jsp#propiedades" method="get" class="row g-3">

@@ -1,5 +1,23 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="co.edu.uts.inmobiliaria.model.Property,java.util.List" %>
+<%@ page import="co.edu.uts.inmobiliaria.model.Property,java.util.List,java.math.BigDecimal,java.math.RoundingMode" %>
+<%!
+    private String precioLegible(BigDecimal precio) {
+        if (precio == null) {
+            return "Consultar";
+        }
+        BigDecimal millon = BigDecimal.valueOf(1000000);
+        if (precio.compareTo(millon) >= 0) {
+            String valor = precio.divide(millon, 2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString();
+            return "$ " + valor.replace('.', ',') + " millones";
+        }
+        BigDecimal mil = BigDecimal.valueOf(1000);
+        if (precio.compareTo(mil) >= 0) {
+            String valor = precio.divide(mil, 1, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString();
+            return "$ " + valor.replace('.', ',') + " mil";
+        }
+        return "$ " + precio.setScale(0, RoundingMode.HALF_UP).toPlainString();
+    }
+%>
 <%
     List<Property> propiedades = (List<Property>) request.getAttribute("propiedades");
     String errorCatalogo = (String) request.getAttribute("errorCatalogo");
@@ -25,7 +43,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h4 mb-0">Propiedades disponibles</h2><span class="text-secondary small"><%= propiedades == null ? 0 : propiedades.size() %> resultados</span></div>
     <div class="row g-4">
         <% if (propiedades != null && !propiedades.isEmpty()) { for (Property propiedad : propiedades) { %>
-            <div class="col-md-6 col-xl-4"><article class="card property-card h-100 border-0 shadow-sm overflow-hidden"><div class="ratio ratio-16x9 bg-brand"><img src="<%= propiedad.getImageUrl() == null ? "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" : propiedad.getImageUrl() %>" class="object-fit-cover" alt="<%= propiedad.getTitle() %>"></div><div class="card-body"><span class="badge text-bg-light mb-2"><%= propiedad.getOperation() %></span><h3 class="h5"><%= propiedad.getTitle() %></h3><p class="text-secondary mb-2"><%= propiedad.getCity() %> · <%= propiedad.getBedrooms() %> habitaciones · <%= propiedad.getBathrooms() %> baños</p><p class="fw-bold text-brand mb-0">$ <%= propiedad.getPrice().toPlainString() %> · <%= propiedad.getArea().toPlainString() %> m²</p></div></article></div>
+            <div class="col-md-6 col-xl-4"><article class="card property-card h-100 border-0 shadow-sm overflow-hidden"><div class="ratio ratio-16x9 bg-brand"><img src="<%= propiedad.getImageUrl() == null ? "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" : propiedad.getImageUrl() %>" class="object-fit-cover" alt="<%= propiedad.getTitle() %>"></div><div class="card-body"><span class="badge text-bg-light mb-2"><%= propiedad.getOperation() %></span><h3 class="h5"><%= propiedad.getTitle() %></h3><p class="text-secondary mb-2"><%= propiedad.getCity() %> · <%= propiedad.getBedrooms() %> habitaciones · <%= propiedad.getBathrooms() %> baños</p><p class="fw-bold text-brand mb-0"><%= precioLegible(propiedad.getPrice()) %> · <%= propiedad.getArea().toPlainString() %> m²</p></div></article></div>
         <% } } else if (errorCatalogo == null) { %><div class="col-12"><div class="alert alert-light border">No encontramos propiedades con esos filtros.</div></div><% } %>
     </div>
 </main>

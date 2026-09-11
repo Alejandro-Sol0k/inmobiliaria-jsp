@@ -5,7 +5,7 @@
     response.setContentType("text/html; charset=UTF-8");
     String tituloPagina = (String) request.getAttribute("tituloPagina");
     if (tituloPagina == null) {
-        tituloPagina = "Inmobiliaria UTS";
+        tituloPagina = "Altaltium Real Estate";
     }
 %>
 <!doctype html>
@@ -13,7 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><%= tituloPagina %> | Inmobiliaria UTS</title>
+    <title><%= tituloPagina %> | Altaltium Real Estate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%= request.getContextPath() %>/assets/css/app.css" rel="stylesheet">
 </head>

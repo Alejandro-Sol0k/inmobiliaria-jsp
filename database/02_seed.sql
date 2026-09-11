@@ -19,15 +19,19 @@ INSERT INTO caracteristica (nombre) VALUES
 ('Piscina'), ('Parqueadero'), ('Ascensor'), ('Gimnasio'), ('Vigilancia')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
+UPDATE inmobiliaria
+SET nombre = 'Altaltium Real Estate', correo = 'contacto@altaltium.test'
+WHERE nombre = 'Inmobiliaria UTS';
+
 INSERT INTO inmobiliaria (nombre, correo, telefono, direccion) VALUES
-('Inmobiliaria UTS', 'contacto@inmobiliaria-uts.test', '6076000000', 'Carrera 27 # 9-50')
+('Altaltium Real Estate', 'contacto@altaltium.test', '6076000000', 'Carrera 27 # 9-50')
 ON DUPLICATE KEY UPDATE correo = VALUES(correo);
 
 INSERT INTO propiedad (id_inmobiliaria, id_ciudad, id_tipo, matricula_inmobiliaria, titulo, descripcion, direccion, precio, operacion, habitaciones, banos, area_m2)
 VALUES
-((SELECT id_inmobiliaria FROM inmobiliaria WHERE nombre = 'Inmobiliaria UTS'), (SELECT id_ciudad FROM ciudad WHERE nombre = 'Bucaramanga'), (SELECT id_tipo FROM tipo_propiedad WHERE nombre = 'Casa'), 'UTS-CASA-001', 'Casa Brisas del Rio', 'Casa amplia con espacios familiares.', 'Calle 45 # 12-30', 480000000, 'VENTA', 3, 2, 145.00),
-((SELECT id_inmobiliaria FROM inmobiliaria WHERE nombre = 'Inmobiliaria UTS'), (SELECT id_ciudad FROM ciudad WHERE nombre = 'Floridablanca'), (SELECT id_tipo FROM tipo_propiedad WHERE nombre = 'Apartamento'), 'UTS-APT-001', 'Apartamento La Riviera', 'Apartamento iluminado con parqueadero.', 'Carrera 22 # 35-18', 1850000, 'ARRIENDO', 2, 2, 78.00),
-((SELECT id_inmobiliaria FROM inmobiliaria WHERE nombre = 'Inmobiliaria UTS'), (SELECT id_ciudad FROM ciudad WHERE nombre = 'Bucaramanga'), (SELECT id_tipo FROM tipo_propiedad WHERE nombre = 'Oficina'), 'UTS-OFI-001', 'Oficina Cabecera', 'Oficina moderna para equipos de trabajo.', 'Carrera 33 # 48-20', 3200000, 'ARRIENDO', 0, 1, 85.00)
+((SELECT id_inmobiliaria FROM inmobiliaria WHERE nombre = 'Altaltium Real Estate'), (SELECT id_ciudad FROM ciudad WHERE nombre = 'Bucaramanga'), (SELECT id_tipo FROM tipo_propiedad WHERE nombre = 'Casa'), 'UTS-CASA-001', 'Casa Brisas del Rio', 'Casa amplia con espacios familiares.', 'Calle 45 # 12-30', 480000000, 'VENTA', 3, 2, 145.00),
+((SELECT id_inmobiliaria FROM inmobiliaria WHERE nombre = 'Altaltium Real Estate'), (SELECT id_ciudad FROM ciudad WHERE nombre = 'Floridablanca'), (SELECT id_tipo FROM tipo_propiedad WHERE nombre = 'Apartamento'), 'UTS-APT-001', 'Apartamento La Riviera', 'Apartamento iluminado con parqueadero.', 'Carrera 22 # 35-18', 1850000, 'ARRIENDO', 2, 2, 78.00),
+((SELECT id_inmobiliaria FROM inmobiliaria WHERE nombre = 'Altaltium Real Estate'), (SELECT id_ciudad FROM ciudad WHERE nombre = 'Bucaramanga'), (SELECT id_tipo FROM tipo_propiedad WHERE nombre = 'Oficina'), 'UTS-OFI-001', 'Oficina Cabecera', 'Oficina moderna para equipos de trabajo.', 'Carrera 33 # 48-20', 3200000, 'ARRIENDO', 0, 1, 85.00)
 ON DUPLICATE KEY UPDATE titulo = VALUES(titulo), precio = VALUES(precio), disponible = TRUE;
 
 INSERT INTO imagen_propiedad (id_propiedad, url, texto_alternativo, es_principal)

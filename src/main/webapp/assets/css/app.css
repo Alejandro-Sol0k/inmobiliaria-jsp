@@ -23,6 +23,8 @@ body {
 }
 
 .hero-card { background: rgba(255, 255, 255, .12); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.25); }
+.hero-logo { width: 250px; height: 250px; object-fit: contain; border-radius: 1.25rem; box-shadow: 0 1rem 2rem rgba(0,0,0,.2); }
+.auth-logo { width: 150px; height: 150px; object-fit: contain; border-radius: 1rem; }
 .property-card { transition: transform .2s ease, box-shadow .2s ease; }
 .property-card:hover { transform: translateY(-4px); box-shadow: 0 .75rem 1.5rem rgba(18, 59, 93, .12); }
 .auth-shell { min-height: calc(100vh - 72px); display: grid; place-items: center; }
