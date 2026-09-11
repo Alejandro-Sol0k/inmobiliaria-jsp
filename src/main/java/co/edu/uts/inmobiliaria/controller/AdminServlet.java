@@ -1,0 +1,71 @@
+package co.edu.uts.inmobiliaria.controller;
+
+import co.edu.uts.inmobiliaria.dao.AdminDao;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/app/admin")
+public final class AdminServlet extends HttpServlet {
+    private static final List<String> ROLES = Arrays.asList("ADMINISTRADOR", "INMOBILIARIA", "CLIENTE", "VISITANTE");
+    private final AdminDao adminDao = new AdminDao();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isAdmin(request)) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "Solo el administrador puede acceder a este panel."); return; }
+        loadPage(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!isAdmin(request)) { response.sendError(HttpServletResponse.SC_FORBIDDEN); return; }
+        try {
+            String action = value(request, "accion");
+            if ("rol".equals(action)) {
+                String role = value(request, "rol").toUpperCase();
+                if (!ROLES.contains(role)) throw new IllegalArgumentException("Rol no válido.");
+                adminDao.setRole(integer(request, "idUsuario"), role);
+                redirect(response, request, "rol=ok");
+            } else if ("estado".equals(action)) {
+                adminDao.toggleUser(integer(request, "idUsuario"), currentUserId(request));
+                redirect(response, request, "estado=ok");
+            } else if ("catalogo".equals(action)) {
+                String name = value(request, "nombre");
+                if (name.isEmpty()) throw new IllegalArgumentException("Escribe un nombre para el catálogo.");
+                adminDao.addCatalog(value(request, "catalogo"), name);
+                redirect(response, request, "catalogo=ok");
+            } else throw new IllegalArgumentException("Acción no válida.");
+        } catch (Exception exception) {
+            request.setAttribute("errorAdmin", exception.getMessage() == null ? "No fue posible completar la acción." : exception.getMessage());
+            loadPage(request, response);
+        }
+    }
+
+    private void loadPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            request.setAttribute("usuarios", adminDao.findUsers());
+            request.setAttribute("ciudades", adminDao.findCatalog("ciudad"));
+            request.setAttribute("tipos", adminDao.findCatalog("tipo"));
+            request.setAttribute("caracteristicas", adminDao.findCatalog("caracteristica"));
+        } catch (Exception exception) {
+            request.setAttribute("errorAdmin", "No fue posible cargar el panel administrativo.");
+            getServletContext().log("Error en panel administrativo", exception);
+        }
+        request.setAttribute("tituloPagina", "Administración");
+        request.getRequestDispatcher("/app/admin.jsp").forward(request, response);
+    }
+
+    private static boolean isAdmin(HttpServletRequest request) {
+        Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
+        return "ADMINISTRADOR".equals(role);
+    }
+    private static int currentUserId(HttpServletRequest request) { return ((Number) request.getSession(false).getAttribute("usuarioId")).intValue(); }
+    private static int integer(HttpServletRequest request, String name) { return Integer.parseInt(value(request, name)); }
+    private static String value(HttpServletRequest request, String name) { String value = request.getParameter(name); return value == null ? "" : value.trim(); }
+    private static void redirect(HttpServletResponse response, HttpServletRequest request, String query) throws IOException { response.sendRedirect(request.getContextPath() + "/app/admin?" + query); }
+}

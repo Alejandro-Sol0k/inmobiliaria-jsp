@@ -96,6 +96,8 @@ body {
 .report-row { display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; border-bottom: 1px solid #edf1f4; }
 .report-row:last-child { border-bottom: 0; }
 .report-row strong { min-width: 2rem; padding: .25rem .55rem; border-radius: 999px; background: rgba(213,160,68,.17); color: #76551a; text-align: center; }
+.catalog-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.catalog-chips span { padding: .35rem .6rem; border: 1px solid #e1e8ee; border-radius: 999px; background: #fff; color: var(--muted); font-size: .78rem; }
 .gold-line { width: 62px; height: 3px; background: var(--accent); border-radius: 99px; }
 
 @media (max-width: 767.98px) {

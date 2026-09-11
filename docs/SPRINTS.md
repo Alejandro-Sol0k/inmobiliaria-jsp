@@ -17,6 +17,7 @@
 - [x] Buscador con filtros por ciudad, tipo, operacion y precio.
 - [x] Perfil 1:1 del usuario.
 - [x] Dashboards diferenciados.
+- [x] Panel administrativo de usuarios, roles y catálogos.
 
 ## Sprint 3 - Operacion y cierre
 
