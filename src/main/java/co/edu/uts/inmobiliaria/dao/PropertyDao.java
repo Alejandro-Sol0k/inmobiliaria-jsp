@@ -59,4 +59,57 @@ public final class PropertyDao {
         }
         return properties;
     }
+
+    public void create(String title, String city, String type, String operation,
+            String registration, String address, String description, BigDecimal price,
+            int bedrooms, int bathrooms, BigDecimal area) throws SQLException {
+        String idCompanySql = "SELECT id_inmobiliaria FROM inmobiliaria ORDER BY id_inmobiliaria LIMIT 1";
+        String idCitySql = "SELECT id_ciudad FROM ciudad WHERE nombre = ?";
+        String idTypeSql = "SELECT id_tipo FROM tipo_propiedad WHERE nombre = ?";
+        String insertSql = "INSERT INTO propiedad (id_inmobiliaria, id_ciudad, id_tipo, matricula_inmobiliaria, titulo, descripcion, direccion, precio, operacion, habitaciones, banos, area_m2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = Database.getConnection()) {
+            int companyId = findId(connection, idCompanySql, null, "No existe una inmobiliaria configurada.");
+            int cityId = findId(connection, idCitySql, city, "La ciudad seleccionada no existe.");
+            int typeId = findId(connection, idTypeSql, type, "El tipo de propiedad seleccionado no existe.");
+            try (PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                statement.setInt(1, companyId);
+                statement.setInt(2, cityId);
+                statement.setInt(3, typeId);
+                statement.setString(4, registration);
+                statement.setString(5, title);
+                statement.setString(6, description);
+                statement.setString(7, address);
+                statement.setBigDecimal(8, price);
+                statement.setString(9, operation);
+                statement.setInt(10, bedrooms);
+                statement.setInt(11, bathrooms);
+                statement.setBigDecimal(12, area);
+                statement.executeUpdate();
+            }
+        }
+    }
+
+    public void deactivate(int propertyId) throws SQLException {
+        try (Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE propiedad SET disponible = FALSE WHERE id_propiedad = ?")) {
+            statement.setInt(1, propertyId);
+            statement.executeUpdate();
+        }
+    }
+
+    private int findId(Connection connection, String sql, String parameter, String message)
+            throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (parameter != null) {
+                statement.setString(1, parameter);
+            }
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    return result.getInt(1);
+                }
+            }
+        }
+        throw new SQLException(message);
+    }
 }

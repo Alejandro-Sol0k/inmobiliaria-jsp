@@ -12,6 +12,7 @@
                     <li class="nav-item"><a class="btn btn-light btn-sm px-3" href="<%= request.getContextPath() %>/auth/registro">Crear cuenta</a></li>
                 <% } else { %>
                     <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/dashboard.jsp">Panel</a></li>
+                    <% if ("INMOBILIARIA".equals(session.getAttribute("usuarioRol")) || "ADMINISTRADOR".equals(session.getAttribute("usuarioRol"))) { %><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/gestion-propiedades">Gestionar</a></li><% } %>
                     <li class="nav-item"><a class="btn btn-outline-light btn-sm px-3" href="<%= request.getContextPath() %>/auth/logout.jsp">Cerrar sesion</a></li>
                 <% } %>
             </ul>
