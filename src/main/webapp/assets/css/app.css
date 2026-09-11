@@ -1,0 +1,28 @@
+:root {
+    --brand: #123b5d;
+    --brand-light: #eaf3f8;
+    --accent: #dca54a;
+}
+
+body {
+    background: #f6f8fb;
+    color: #1c2833;
+}
+
+.bg-brand { background: var(--brand); }
+.text-brand { color: var(--brand); }
+.btn-accent { background: var(--accent); border-color: var(--accent); color: #19242c; }
+.btn-accent:hover { background: #c79136; border-color: #c79136; }
+
+.hero {
+    background: linear-gradient(120deg, rgba(18, 59, 93, .97), rgba(24, 97, 121, .9)), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=80') center/cover;
+    color: white;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-card { background: rgba(255, 255, 255, .12); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.25); }
+.property-card { transition: transform .2s ease, box-shadow .2s ease; }
+.property-card:hover { transform: translateY(-4px); box-shadow: 0 .75rem 1.5rem rgba(18, 59, 93, .12); }
+.auth-shell { min-height: calc(100vh - 72px); display: grid; place-items: center; }

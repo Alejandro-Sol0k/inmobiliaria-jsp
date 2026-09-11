@@ -1,0 +1,7 @@
+<%
+    request.setAttribute("tituloPagina", "Panel");
+%>
+<%@ include file="/WEB-INF/jspf/cabecera.jspf" %>
+<%@ include file="/WEB-INF/jspf/navegacion.jspf" %>
+<main class="container py-5"><div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4"><div><span class="text-uppercase small text-brand fw-semibold">Area privada</span><h1 class="fw-bold mb-1">Hola, <%= session.getAttribute("usuarioCorreo") %></h1><p class="text-secondary mb-0">Rol actual: <strong><%= session.getAttribute("usuarioRol") %></strong></p></div><a class="btn btn-accent" href="<%= request.getContextPath() %>/index.jsp">Volver al catalogo</a></div><div class="row g-4"><div class="col-md-4"><div class="card border-0 shadow-sm h-100"><div class="card-body"><h2 class="h5">Tu perfil</h2><p class="text-secondary">Completa tus datos personales para agilizar tus tramites.</p><span class="badge text-bg-light">Sprint 1</span></div></div></div><div class="col-md-4"><div class="card border-0 shadow-sm h-100"><div class="card-body"><h2 class="h5">Propiedades</h2><p class="text-secondary">El catalogo y los filtros se habilitaran en el Sprint 2.</p><span class="badge text-bg-light">En construccion</span></div></div></div><div class="col-md-4"><div class="card border-0 shadow-sm h-100"><div class="card-body"><h2 class="h5">Citas y solicitudes</h2><p class="text-secondary">La agenda y los tramites se incorporaran en el Sprint 3.</p><span class="badge text-bg-light">Planeado</span></div></div></div></div></main>
+<%@ include file="/WEB-INF/jspf/pie.jspf" %>

@@ -1,0 +1,17 @@
+# Archivos generados por Tomcat y herramientas de construccion
+target/
+work/
+outputs/
+*.class
+**/org/apache/jsp/
+
+# Configuracion local y secretos
+src/main/resources/db.properties
+src/main/webapp/WEB-INF/classes/
+uploads/
+
+# Configuracion de IDE y sistema operativo
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
