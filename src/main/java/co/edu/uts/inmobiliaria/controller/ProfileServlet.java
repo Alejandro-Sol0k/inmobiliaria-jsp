@@ -33,6 +33,9 @@ public final class ProfileServlet extends HttpServlet {
         try {
             profileDao.update(userId(request), names, lastNames, document,
                     value(request, "telefono"), value(request, "direccion"), value(request, "fotoUrl"));
+            request.getSession(false).setAttribute("usuarioNombres", names);
+            request.getSession(false).setAttribute("usuarioApellidos", lastNames);
+            request.getSession(false).setAttribute("usuarioFotoUrl", value(request, "fotoUrl"));
             response.sendRedirect(request.getContextPath() + "/app/perfil?actualizado=ok");
         } catch (Exception exception) {
             request.setAttribute("errorPerfil", exception.getMessage() == null

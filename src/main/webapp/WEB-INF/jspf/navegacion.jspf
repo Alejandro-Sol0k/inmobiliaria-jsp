@@ -13,7 +13,7 @@
                 <% } else { %>
                     <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/dashboard.jsp">Panel</a></li><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/perfil">Perfil</a></li>
                     <% if ("INMOBILIARIA".equals(session.getAttribute("usuarioRol")) || "ADMINISTRADOR".equals(session.getAttribute("usuarioRol"))) { %><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/gestion-propiedades">Gestionar</a></li><% } %>
-                    <li class="nav-item"><a class="btn btn-outline-light btn-sm px-3" href="<%= request.getContextPath() %>/auth/logout.jsp">Cerrar sesion</a></li>
+                    <li class="nav-item user-summary"><a class="user-summary-link" href="<%= request.getContextPath() %>/app/perfil"><img class="user-avatar" src="<%= request.getSession().getAttribute("usuarioFotoUrl") == null || request.getSession().getAttribute("usuarioFotoUrl").toString().trim().isEmpty() ? request.getContextPath() + "/assets/images/profile-default.png" : request.getSession().getAttribute("usuarioFotoUrl") %>" alt="Foto de perfil"><span><strong><%= request.getSession().getAttribute("usuarioNombres") == null ? "Usuario" : request.getSession().getAttribute("usuarioNombres") %> <%= request.getSession().getAttribute("usuarioApellidos") == null ? "" : request.getSession().getAttribute("usuarioApellidos") %></strong><small><%= session.getAttribute("usuarioRol") %></small></span></a></li><li class="nav-item"><a class="btn btn-outline-light btn-sm px-3" href="<%= request.getContextPath() %>/auth/logout.jsp">Cerrar sesion</a></li>
                 <% } %>
             </ul>
         </div>
