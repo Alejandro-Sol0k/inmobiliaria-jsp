@@ -206,6 +206,28 @@ public final class PropertyDao {
         return features;
     }
 
+    public Property findActiveById(int propertyId) throws SQLException {
+        for (Property property : findPublic("", "", "", null)) {
+            if (property.getId() == propertyId) return property;
+        }
+        return null;
+    }
+
+    public List<String> findImageUrls(int propertyId) throws SQLException {
+        List<String> images = new ArrayList<>();
+        String sql = "SELECT ip.url FROM imagen_propiedad ip INNER JOIN propiedad p "
+                + "ON p.id_propiedad = ip.id_propiedad WHERE ip.id_propiedad = ? AND p.disponible = TRUE "
+                + "ORDER BY ip.es_principal DESC, ip.id_imagen";
+        try (Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, propertyId);
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) images.add(result.getString("url"));
+            }
+        }
+        return images;
+    }
+
     private void insertImage(Connection connection, int propertyId, String imageUrl, String title)
             throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
