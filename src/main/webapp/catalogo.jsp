@@ -29,14 +29,15 @@
 <%@ include file="/WEB-INF/jspf/cabecera.jspf" %>
 <%@ include file="/WEB-INF/jspf/navegacion.jspf" %>
 <main class="container py-5">
-    <div class="mb-4"><span class="text-uppercase small text-brand fw-semibold">Catálogo</span><h1 class="fw-bold mb-1">Encuentra tu propiedad</h1><p class="text-secondary mb-0">Filtra las publicaciones disponibles y encuentra la opción adecuada.</p></div>
-    <form action="<%= request.getContextPath() %>/propiedades" method="get" class="card border-0 shadow-sm p-3 p-lg-4 mb-5">
+    <div class="mb-4"><span class="section-kicker">Catálogo</span><h1 class="fw-bold mb-1">Encuentra tu propiedad</h1><p class="text-secondary mb-0">Filtra las publicaciones disponibles y encuentra la opción adecuada.</p></div>
+    <form action="<%= request.getContextPath() %>/propiedades" method="get" class="card filter-panel border-0 shadow-sm p-3 p-lg-4 mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3"><span class="filter-icon">⌕</span><div><h2 class="h6 fw-bold mb-0">Buscar propiedades</h2><small class="text-secondary">Puedes combinar varios filtros.</small></div></div>
         <div class="row g-3 align-items-end">
             <div class="col-md-3"><label class="form-label" for="ciudad">Ciudad</label><input class="form-control" id="ciudad" name="ciudad" value="<%= filtroCiudad == null ? "" : filtroCiudad %>" placeholder="Bucaramanga"></div>
             <div class="col-md-3"><label class="form-label" for="tipo">Tipo</label><select class="form-select" id="tipo" name="tipo"><option value="">Todos</option><option <%= "Casa".equals(filtroTipo) ? "selected" : "" %>>Casa</option><option <%= "Apartamento".equals(filtroTipo) ? "selected" : "" %>>Apartamento</option><option <%= "Local".equals(filtroTipo) ? "selected" : "" %>>Local</option><option <%= "Oficina".equals(filtroTipo) ? "selected" : "" %>>Oficina</option><option <%= "Terreno".equals(filtroTipo) ? "selected" : "" %>>Terreno</option></select></div>
             <div class="col-md-2"><label class="form-label" for="operacion">Operación</label><select class="form-select" id="operacion" name="operacion"><option value="">Todas</option><option value="VENTA" <%= "VENTA".equals(filtroOperacion) ? "selected" : "" %>>Venta</option><option value="ARRIENDO" <%= "ARRIENDO".equals(filtroOperacion) ? "selected" : "" %>>Arriendo</option></select></div>
-            <div class="col-md-2"><label class="form-label" for="precioMax">Precio máximo</label><input class="form-control" id="precioMax" name="precioMax" type="number" min="0" step="100000" value="<%= filtroPrecioMax == null ? "" : filtroPrecioMax %>"></div>
-            <div class="col-md-2"><button class="btn btn-accent w-100" type="submit">Filtrar</button></div>
+            <div class="col-md-2"><label class="form-label" for="precioMaxVisible">Precio máximo</label><div class="input-group money-field"><span class="input-group-text">$</span><input class="form-control" id="precioMaxVisible" data-money-input="precioMax" inputmode="numeric" value="<%= filtroPrecioMax == null ? "" : filtroPrecioMax %>" placeholder="Ej. 500.000.000"><input type="hidden" name="precioMax" data-money-value="precioMax" value="<%= filtroPrecioMax == null ? "" : filtroPrecioMax %>"></div><div class="form-text">Sin decimales</div></div>
+            <div class="col-md-2 d-flex gap-2"><button class="btn btn-accent flex-grow-1" type="submit">Filtrar</button><a class="btn btn-outline-secondary btn-clear-filter" href="<%= request.getContextPath() %>/propiedades" title="Quitar filtros">Quitar</a></div>
         </div>
     </form>
     <% if (errorCatalogo != null) { %><div class="alert alert-danger"><%= errorCatalogo %></div><% } %>

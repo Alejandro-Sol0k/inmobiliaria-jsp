@@ -2,13 +2,22 @@ package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.ProfileDao;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.UUID;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 @WebServlet("/app/perfil")
+@MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public final class ProfileServlet extends HttpServlet {
     private final ProfileDao profileDao = new ProfileDao();
 
@@ -31,11 +40,16 @@ public final class ProfileServlet extends HttpServlet {
             return;
         }
         try {
+            String photoUrl = value(request, "fotoUrl");
+            Part photoPart = request.getPart("fotoArchivo");
+            if (photoPart != null && photoPart.getSize() > 0) {
+                photoUrl = saveUploadedPhoto(photoPart, request);
+            }
             profileDao.update(userId(request), names, lastNames, document,
-                    value(request, "telefono"), value(request, "direccion"), value(request, "fotoUrl"));
+                    value(request, "telefono"), value(request, "direccion"), photoUrl);
             request.getSession(false).setAttribute("usuarioNombres", names);
             request.getSession(false).setAttribute("usuarioApellidos", lastNames);
-            request.getSession(false).setAttribute("usuarioFotoUrl", value(request, "fotoUrl"));
+            request.getSession(false).setAttribute("usuarioFotoUrl", photoUrl);
             response.sendRedirect(request.getContextPath() + "/app/perfil?actualizado=ok");
         } catch (Exception exception) {
             request.setAttribute("errorPerfil", exception.getMessage() == null
@@ -63,5 +77,28 @@ public final class ProfileServlet extends HttpServlet {
     private static String value(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
         return value == null ? "" : value.trim();
+    }
+
+    private String saveUploadedPhoto(Part photoPart, HttpServletRequest request) throws IOException {
+        String originalName = photoPart.getSubmittedFileName();
+        String extension = "";
+        if (originalName != null) {
+            int dot = originalName.lastIndexOf('.');
+            if (dot >= 0) {
+                extension = originalName.substring(dot).toLowerCase(Locale.ROOT);
+            }
+        }
+        if (!Arrays.asList(".jpg", ".jpeg", ".png", ".gif", ".webp").contains(extension)) {
+            throw new IOException("La foto debe ser JPG, PNG, GIF o WEBP.");
+        }
+        String fileName = UUID.randomUUID().toString() + extension;
+        String realDirectory = getServletContext().getRealPath("/assets/images/uploads/profiles");
+        if (realDirectory == null) {
+            throw new IOException("Tomcat no tiene disponible la carpeta de fotos.");
+        }
+        Path directory = Paths.get(realDirectory);
+        Files.createDirectories(directory);
+        photoPart.write(directory.resolve(fileName).toString());
+        return request.getContextPath() + "/assets/images/uploads/profiles/" + fileName;
     }
 }

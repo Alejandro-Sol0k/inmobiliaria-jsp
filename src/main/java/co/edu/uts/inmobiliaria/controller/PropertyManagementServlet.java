@@ -98,7 +98,11 @@ public final class PropertyManagementServlet extends HttpServlet {
     }
 
     private static BigDecimal decimal(HttpServletRequest request, String name) {
-        return new BigDecimal(value(request, name));
+        String raw = value(request, name);
+        if (raw.isEmpty()) {
+            raw = value(request, name + "Visible");
+        }
+        return new BigDecimal(raw.replace(".", "").replace(",", ""));
     }
 
     private String saveUploadedImage(Part imagePart, HttpServletRequest request) throws IOException {

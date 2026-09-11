@@ -50,7 +50,7 @@ public final class PropertyServlet extends HttpServlet {
             return null;
         }
         try {
-            return new BigDecimal(value);
+            return new BigDecimal(value.replace(".", "").replace(",", ""));
         } catch (NumberFormatException exception) {
             return null;
         }
