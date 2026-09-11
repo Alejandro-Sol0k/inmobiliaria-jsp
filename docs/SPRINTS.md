@@ -7,13 +7,14 @@
 - [x] Crear landing page responsiva.
 - [x] Crear registro e inicio de sesion.
 - [x] Crear control de sesion y rol en JSPF.
-- [ ] Ejecutar y validar el esquema contra MySQL local.
+- [x] Ejecutar y validar el esquema contra MySQL local.
+- [x] Cargar propiedades e imagenes de prueba para el catalogo.
 
 ## Sprint 2 - Catalogo y perfiles
 
 - [ ] CRUD de propiedades.
 - [ ] Imagenes y caracteristicas.
-- [ ] Buscador con filtros.
+- [x] Buscador con filtros por ciudad, tipo, operacion y precio.
 - [ ] Perfil 1:1 del usuario.
 - [ ] Dashboards diferenciados.
 

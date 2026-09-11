@@ -38,4 +38,4 @@ src/main/webapp/
 
 ## Estado actual
 
-La primera iteracion deja lista la estructura base, la landing page, el registro, el inicio de sesion con contrasena almacenada mediante PBKDF2, las sesiones por rol, el filtro de rutas privadas y el esquema relacional inicial. Los CRUD y reportes se incorporaran por sprint.
+La primera iteracion deja lista la estructura base, la landing page, el registro, el inicio de sesion con contrasena almacenada mediante PBKDF2, las sesiones por rol, el filtro de rutas privadas y el esquema relacional inicial. El catalogo publico ya consulta propiedades e imagenes desde MySQL y permite filtros basicos.

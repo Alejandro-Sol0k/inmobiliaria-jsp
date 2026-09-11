@@ -13,7 +13,7 @@
                     <span class="badge rounded-pill text-bg-warning mb-3">Encuentra tu proximo espacio</span>
                     <h1 class="display-4 fw-bold">Propiedades que se sienten como hogar.</h1>
                     <p class="lead mt-3 mb-4">Explora inmuebles seleccionados en Bucaramanga y su area metropolitana con el respaldo de Inmobiliaria UTS.</p>
-                    <a class="btn btn-accent btn-lg px-4" href="#propiedades">Explorar propiedades</a>
+            <a class="btn btn-accent btn-lg px-4" href="<%= request.getContextPath() %>/propiedades">Explorar propiedades</a>
                 </div>
                 <div class="col-lg-5">
                     <div class="hero-card rounded-4 p-4 shadow-lg">
