@@ -31,7 +31,7 @@ src/main/webapp/
 ## Puesta en marcha
 
 1. Ejecutar `database/01_schema.sql` y `database/02_seed.sql` en MySQL.
-2. Configurar el recurso `jdbc/inmobiliaria` en `META-INF/context.xml` o en la configuracion del servidor Tomcat.
+2. Configurar el recurso `jdbc/inmobiliaria` en `META-INF/context.xml` o en la configuracion del servidor Tomcat. En XAMPP se deja `password=""` si el usuario `root` no tiene contraseña.
 3. Copiar el conector JDBC de MySQL en `WEB-INF/lib` sin versionarlo si el entorno lo administra externamente.
 4. Desplegar `src/main/webapp` como aplicacion web en Tomcat.
 5. Abrir `index.jsp`.
