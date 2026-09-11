@@ -85,10 +85,17 @@ body {
 .operation-card { border: 1px solid #e2eaf0; border-radius: 1.15rem; background: linear-gradient(145deg, #fff, #f8fafc); }
 .status-badge { display: inline-flex; align-items: center; padding: .35rem .55rem; border-radius: 999px; font-size: .68rem; font-weight: 800; letter-spacing: .04em; }
 .status-pendiente, .status-radicada, .status-en_revision { background: #fff4d9; color: #85651e; }
-.status-confirmada, .status-aprobada { background: #dff6ea; color: #17633d; }
+.status-confirmada, .status-aprobada, .status-aprobado { background: #dff6ea; color: #17633d; }
 .status-atendida { background: #dceeff; color: #1e507c; }
-.status-cancelada, .status-rechazada { background: #fde1e1; color: #8a2d35; }
+.status-cancelada, .status-rechazada, .status-rechazado { background: #fde1e1; color: #8a2d35; }
 .table td, .table th { vertical-align: middle; }
+.document-upload-form { min-width: 220px; display: flex; gap: .35rem; align-items: center; }
+.empty-state { border: 1px dashed #d1dce4; border-radius: 1rem; background: #fff; }
+.empty-state-icon { color: var(--accent); font-size: 2.5rem; line-height: 1; }
+.report-card { border: 1px solid #e2eaf0; border-radius: 1.1rem; }
+.report-row { display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; border-bottom: 1px solid #edf1f4; }
+.report-row:last-child { border-bottom: 0; }
+.report-row strong { min-width: 2rem; padding: .25rem .55rem; border-radius: 999px; background: rgba(213,160,68,.17); color: #76551a; text-align: center; }
 .gold-line { width: 62px; height: 3px; background: var(--accent); border-radius: 99px; }
 
 @media (max-width: 767.98px) {

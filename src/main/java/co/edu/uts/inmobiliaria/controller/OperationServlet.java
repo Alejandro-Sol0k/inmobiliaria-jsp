@@ -1,6 +1,7 @@
 package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.OperationDao;
+import co.edu.uts.inmobiliaria.dao.DocumentDao;
 import co.edu.uts.inmobiliaria.dao.PropertyDao;
 import co.edu.uts.inmobiliaria.model.Property;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public final class OperationServlet extends HttpServlet {
     private static final List<String> APPOINTMENT_STATUSES = Arrays.asList("PENDIENTE", "CONFIRMADA", "CANCELADA", "ATENDIDA");
     private static final List<String> REQUEST_STATUSES = Arrays.asList("RADICADA", "EN_REVISION", "APROBADA", "RECHAZADA");
     private final OperationDao operationDao = new OperationDao();
+    private final DocumentDao documentDao = new DocumentDao();
     private final PropertyDao propertyDao = new PropertyDao();
 
     @Override
@@ -84,10 +86,12 @@ public final class OperationServlet extends HttpServlet {
             request.setAttribute("propiedades", propertyDao.findPublic("", "", "", null));
             request.setAttribute("citas", operationDao.findAppointments(userId, manager));
             request.setAttribute("solicitudes", operationDao.findRequests(userId, manager));
+            request.setAttribute("documentos", documentDao.findDocuments(userId, manager));
         } catch (Exception exception) {
             request.setAttribute("propiedades", Collections.emptyList());
             request.setAttribute("citas", Collections.emptyList());
             request.setAttribute("solicitudes", Collections.emptyList());
+            request.setAttribute("documentos", Collections.emptyList());
             request.setAttribute("errorOperaciones", "No fue posible cargar las citas y solicitudes.");
             getServletContext().log("Error cargando operaciones", exception);
         }
