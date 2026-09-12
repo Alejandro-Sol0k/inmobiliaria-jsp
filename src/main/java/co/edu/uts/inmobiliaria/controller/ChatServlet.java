@@ -22,6 +22,10 @@ public final class ChatServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (!canUseChat(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "El chat requiere una cuenta autenticada.");
+            return;
+        }
         loadPage(request, response);
     }
 
@@ -29,6 +33,10 @@ public final class ChatServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        if (!canUseChat(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "El chat requiere una cuenta autenticada.");
+            return;
+        }
         int userId = userId(request);
         String role = role(request);
         try {
@@ -101,6 +109,11 @@ public final class ChatServlet extends HttpServlet {
 
     private static boolean isManager(String role) {
         return "INMOBILIARIA".equals(role) || "ADMINISTRADOR".equals(role);
+    }
+
+    private static boolean canUseChat(HttpServletRequest request) {
+        String role = role(request);
+        return "CLIENTE".equals(role) || isManager(role);
     }
 
     private static void requireRole(String actual, String expected) {

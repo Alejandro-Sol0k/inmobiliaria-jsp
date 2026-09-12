@@ -8,7 +8,7 @@ Altaltium Real Estate permite consultar propiedades, autenticarse por roles, ges
 
 | Rol | Permisos principales |
 |---|---|
-| Visitante | Landing y catálogo público. |
+| Visitante no autenticado | Landing, catálogo público y detalle de propiedades; sin paneles internos ni datos de contacto completos. |
 | Cliente | Perfil, favoritos, citas, solicitudes y carga de documentos. |
 | Inmobiliaria | Gestión de propiedades, atención de citas/solicitudes, revisión de documentos y reportes. |
 | Administrador | Todo lo anterior, más usuarios, roles, catálogos y auditoría. |

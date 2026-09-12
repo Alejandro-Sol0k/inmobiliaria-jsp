@@ -1,12 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="co.edu.uts.inmobiliaria.model.Property,java.net.URLEncoder,java.util.Collections,java.util.List" %>
+<%@ page import="co.edu.uts.inmobiliaria.model.Property,java.util.Collections,java.util.List" %>
 <%!
-    private String detalleOLogin(String contextPath, int propiedadId, boolean autenticado) throws Exception {
-        String detalle = "/propiedad?id=" + propiedadId;
-        if (autenticado) {
-            return contextPath + detalle;
-        }
-        return contextPath + "/auth/login?redirect=" + URLEncoder.encode(detalle, "UTF-8");
+    private String urlDetalle(String contextPath, int propiedadId) {
+        return contextPath + "/propiedad?id=" + propiedadId;
     }
 %>
 <%
@@ -15,7 +11,6 @@
     if (propiedadesDestacadas == null) {
         propiedadesDestacadas = Collections.emptyList();
     }
-    boolean autenticado = session != null && session.getAttribute("usuarioId") != null;
 %>
 <%@ include file="/WEB-INF/jspf/cabecera.jspf" %>
 <%@ include file="/WEB-INF/jspf/navegacion.jspf" %>
@@ -62,7 +57,7 @@
                     if (imagen == null || imagen.trim().isEmpty()) {
                         imagen = request.getContextPath() + "/assets/images/altaltium-logo.png";
                     }
-                    String enlaceDetalle = detalleOLogin(request.getContextPath(), propiedad.getId(), autenticado);
+                    String enlaceDetalle = urlDetalle(request.getContextPath(), propiedad.getId());
             %>
                 <div class="col-md-4">
                     <article class="card property-card h-100 border-0 shadow-sm overflow-hidden">

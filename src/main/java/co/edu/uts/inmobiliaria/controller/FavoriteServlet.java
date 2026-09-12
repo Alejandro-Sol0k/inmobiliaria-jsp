@@ -29,6 +29,7 @@ public final class FavoriteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         try {
+            requireClient(request);
             int propertyId = Integer.parseInt(value(request, "idPropiedad"));
             if ("quitar".equals(value(request, "accion"))) {
                 favoriteDao.remove(userId(request), propertyId);
@@ -43,6 +44,13 @@ public final class FavoriteServlet extends HttpServlet {
 
     private static int userId(HttpServletRequest request) {
         return ((Number) request.getSession(false).getAttribute("usuarioId")).intValue();
+    }
+
+    private static void requireClient(HttpServletRequest request) {
+        Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
+        if (!"CLIENTE".equals(role)) {
+            throw new IllegalArgumentException("Solo un cliente autenticado puede guardar favoritos.");
+        }
     }
 
     private static String value(HttpServletRequest request, String name) {

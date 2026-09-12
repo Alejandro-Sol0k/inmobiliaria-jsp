@@ -42,6 +42,7 @@ public final class OperationServlet extends HttpServlet {
         String action = value(request, "accion");
         try {
             if ("crearCita".equals(action)) {
+                requireClient(request);
                 LocalDateTime dateTime = LocalDateTime.parse(value(request, "fechaHora"), DATE_TIME_FORMAT);
                 if (!dateTime.isAfter(LocalDateTime.now())) {
                     throw new IllegalArgumentException("La fecha de la cita debe ser futura.");
@@ -53,6 +54,7 @@ public final class OperationServlet extends HttpServlet {
                 return;
             }
             if ("crearSolicitud".equals(action)) {
+                requireClient(request);
                 String operationType = value(request, "tipoOperacion").toUpperCase();
                 if (!Arrays.asList("COMPRA", "ARRIENDO").contains(operationType)) {
                     throw new IllegalArgumentException("Selecciona un tipo de solicitud válido.");
@@ -127,6 +129,13 @@ public final class OperationServlet extends HttpServlet {
     private static boolean isManager(HttpServletRequest request) {
         Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
         return "INMOBILIARIA".equals(role) || "ADMINISTRADOR".equals(role);
+    }
+
+    private static void requireClient(HttpServletRequest request) {
+        Object role = request.getSession(false) == null ? null : request.getSession(false).getAttribute("usuarioRol");
+        if (!"CLIENTE".equals(role)) {
+            throw new IllegalArgumentException("Solo un cliente autenticado puede crear citas o solicitudes.");
+        }
     }
 
     private static int userId(HttpServletRequest request) {

@@ -40,7 +40,7 @@ public final class LoginServlet extends HttpServlet {
         }
         try {
             AuthenticatedUser user = userDao.authenticate(email, password);
-            if (user == null) {
+            if (user == null || "VISITANTE".equals(user.getRole())) {
                 auditDao.log(null, "LOGIN_FALLIDO", "usuario", null, email);
                 request.setAttribute("errorLogin", "El correo o la contrasena no son validos.");
                 doGet(request, response);

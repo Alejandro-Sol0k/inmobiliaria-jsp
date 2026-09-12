@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/app/admin")
 public final class AdminServlet extends HttpServlet {
-    private static final List<String> ROLES = Arrays.asList("ADMINISTRADOR", "INMOBILIARIA", "CLIENTE", "VISITANTE");
+    private static final List<String> ROLES = Arrays.asList("ADMINISTRADOR", "INMOBILIARIA", "CLIENTE");
     private final AdminDao adminDao = new AdminDao();
     private final AuditDao auditDao = new AuditDao();
 
