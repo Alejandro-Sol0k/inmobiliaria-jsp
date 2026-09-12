@@ -25,6 +25,7 @@
 
 - [x] Citas y solicitudes.
 - [x] Documentos y favoritos.
+- [x] Chat privado entre cliente e inmobiliaria con cierre de conversación.
 - [x] Reportes SQL con joins, agrupaciones, solicitudes por inmobiliaria y agregaciones.
 - [x] Documentacion final, matriz de pruebas y guia de despliegue.
 - [ ] Ejecucion y evidencia de pruebas funcionales en XAMPP/Tomcat.

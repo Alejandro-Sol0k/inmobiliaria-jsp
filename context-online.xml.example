@@ -1,0 +1,11 @@
+<!--
+    Ejemplo para Tomcat cuando se usará Clever Cloud.
+    No incluir contraseñas reales en este archivo ni en Git.
+    La aplicación prioriza las variables de entorno:
+    INMOBILIARIA_DB_URL, INMOBILIARIA_DB_USER e INMOBILIARIA_DB_PASSWORD.
+-->
+<Context>
+    <Environment name="INMOBILIARIA_DB_URL" value="jdbc:mysql://bd6hgxhey5grfccxpp63-mysql.services.clever-cloud.com:3306/bd6hgxhey5grfccxpp63?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;useSSL=true" type="java.lang.String" override="false" />
+    <Environment name="INMOBILIARIA_DB_USER" value="USUARIO_CLEVER_CLOUD" type="java.lang.String" override="false" />
+    <Environment name="INMOBILIARIA_DB_PASSWORD" value="CAMBIAR_EN_EL_SERVIDOR" type="java.lang.String" override="false" />
+</Context>

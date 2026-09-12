@@ -28,16 +28,25 @@ La autorización se aplica en el servidor mediante `AuthFilter` y validaciones d
 | Favoritos | `FavoriteServlet`, `FavoriteDao`, `app/favoritos.jsp` |
 | Reportes | `ReportServlet`, `ReportDao`, `app/reportes.jsp` |
 | Administración y auditoría | `AdminServlet`, `AdminDao`, `AuditDao`, `app/admin.jsp` |
+| Chat privado | `ChatServlet`, `ChatDao`, `app/chat.jsp`, `database/04_chat.sql` |
 | Consultas SQL | `database/03_consultas_obligatorias.sql` |
 
 ## Despliegue con XAMPP y Tomcat
 
 1. Iniciar MySQL desde XAMPP.
-2. Ejecutar `database/01_schema.sql`, luego `database/02_seed.sql` y, si se desean validar las consultas, `database/03_consultas_obligatorias.sql` desde phpMyAdmin.
+2. Ejecutar `database/01_schema.sql`, luego `database/02_seed.sql`, `database/04_chat.sql` y, si se desean validar las consultas, `database/03_consultas_obligatorias.sql` desde phpMyAdmin.
 3. Confirmar la conexión en `src/main/webapp/META-INF/context.xml`.
 4. Ejecutar `mvn clean package`.
 5. Copiar `target/inmobiliaria-jsp.war` a la carpeta `webapps` de Tomcat.
 6. Iniciar Tomcat y abrir `/inmobiliaria-jsp/`.
+
+## Conexión a Clever Cloud
+
+La aplicación prioriza estas variables de entorno cuando están definidas: `INMOBILIARIA_DB_URL`, `INMOBILIARIA_DB_USER` e `INMOBILIARIA_DB_PASSWORD`. La URL debe usar el formato JDBC, por ejemplo `jdbc:mysql://HOST:3306/BASE?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=true`.
+
+En Windows se pueden definir antes de iniciar Tomcat con `setx` o en la configuración del servicio. Después se debe reiniciar Tomcat. El archivo `context-online.xml.example` documenta la configuración sin almacenar la contraseña real.
+
+La conexión remota fue comprobada con el host MySQL proporcionado y respondió correctamente. La migración creó `chat_conversacion` y `chat_mensaje` sin alterar las 16 tablas existentes.
 
 ## Git
 

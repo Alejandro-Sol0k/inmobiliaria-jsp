@@ -25,5 +25,8 @@
 | F10 | Consultar auditoría como Administrador | Se muestran las acciones recientes. |
 | F11 | Intentar `/app/admin` como Inmobiliaria | El servidor responde 403. |
 | F12 | Cargar documento de solicitud | El cliente lo carga y el gestor puede cambiar su estado. |
+| F13 | Crear chat como cliente | Se asigna a un inmobiliario activo y solo los participantes ven los mensajes. |
+| F14 | Responder y cerrar chat | Cliente/inmobiliario pueden responder mientras está abierto; solo el gestor puede cerrarlo. |
+| F15 | Conexión online | JDBC conecta al host remoto y la migración deja dos tablas nuevas de chat. |
 
 Estas pruebas deben ejecutarse en el equipo con MySQL, XAMPP y Tomcat activos; se recomienda adjuntar una captura por flujo a la entrega.
