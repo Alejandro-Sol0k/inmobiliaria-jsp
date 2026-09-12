@@ -28,5 +28,6 @@
 | F13 | Crear chat como cliente | Se asigna a un inmobiliario activo y solo los participantes ven los mensajes. |
 | F14 | Responder y cerrar chat | Cliente/inmobiliario pueden responder mientras está abierto; solo el gestor puede cerrarlo. |
 | F15 | Conexión online | JDBC conecta al host remoto y la migración deja dos tablas nuevas de chat. |
+| F16 | Sincronización de réplica | Con `INMOBILIARIA_SYNC_LOCAL=true`, el panel y el listener actualizan XAMPP desde Clever Cloud sin doble escritura. |
 
 Estas pruebas deben ejecutarse en el equipo con MySQL, XAMPP y Tomcat activos; se recomienda adjuntar una captura por flujo a la entrega.

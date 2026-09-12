@@ -12,17 +12,24 @@ public final class Database {
     }
 
     public static Connection getConnection() throws SQLException {
+        if (isRemoteConfigured()) return getRemoteConnection();
+        return getLocalConnection();
+    }
+
+    public static Connection getRemoteConnection() throws SQLException {
         String onlineUrl = setting("INMOBILIARIA_DB_URL", "inmobiliaria.db.url");
-        if (!onlineUrl.isEmpty()) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException exception) {
-                throw new SQLException("No se encontró el controlador JDBC de MySQL.", exception);
-            }
-            return DriverManager.getConnection(onlineUrl,
-                    setting("INMOBILIARIA_DB_USER", "inmobiliaria.db.user"),
-                    setting("INMOBILIARIA_DB_PASSWORD", "inmobiliaria.db.password"));
+        if (onlineUrl.isEmpty()) throw new SQLException("No hay una conexión remota configurada.");
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException exception) {
+            throw new SQLException("No se encontró el controlador JDBC de MySQL.", exception);
         }
+        return DriverManager.getConnection(onlineUrl,
+                setting("INMOBILIARIA_DB_USER", "inmobiliaria.db.user"),
+                setting("INMOBILIARIA_DB_PASSWORD", "inmobiliaria.db.password"));
+    }
+
+    public static Connection getLocalConnection() throws SQLException {
         try {
             DataSource dataSource = (DataSource) new InitialContext()
                     .lookup("java:comp/env/jdbc/inmobiliaria");
@@ -30,6 +37,14 @@ public final class Database {
         } catch (NamingException exception) {
             throw new SQLException("No se encontro el recurso JDBC jdbc/inmobiliaria.", exception);
         }
+    }
+
+    public static boolean isRemoteConfigured() {
+        return !setting("INMOBILIARIA_DB_URL", "inmobiliaria.db.url").isEmpty();
+    }
+
+    public static boolean isLocalSyncEnabled() {
+        return "true".equalsIgnoreCase(setting("INMOBILIARIA_SYNC_LOCAL", "inmobiliaria.sync.local"));
     }
 
     private static String setting(String environmentName, String propertyName) {

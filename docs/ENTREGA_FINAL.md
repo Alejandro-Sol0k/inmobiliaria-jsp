@@ -48,6 +48,10 @@ En Windows se pueden definir antes de iniciar Tomcat con `setx` o en la configur
 
 La conexión remota fue comprobada con el host MySQL proporcionado y respondió correctamente. La migración creó `chat_conversacion` y `chat_mensaje` sin alterar las 16 tablas existentes.
 
+## Sincronización local sin conflictos
+
+La base de Clever Cloud es la fuente única de verdad. En el Tomcat local se configuran las variables remotas y `INMOBILIARIA_SYNC_LOCAL=true`; el listener replica todas las tablas en XAMPP cada cinco minutos y el administrador puede forzarla desde el panel. La copia local se reemplaza dentro de una transacción con restricciones foráneas desactivadas temporalmente, por lo que no se hacen escrituras independientes ni se generan IDs duplicados.
+
 ## Git
 
 Los cambios se registran con commits descriptivos. El autor configurado para el repositorio es Joel (`jaconde@uts.edu.co`).

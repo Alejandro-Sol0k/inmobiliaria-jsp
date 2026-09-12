@@ -2,6 +2,8 @@ package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.AdminDao;
 import co.edu.uts.inmobiliaria.dao.AuditDao;
+import co.edu.uts.inmobiliaria.dao.DatabaseSyncService;
+import co.edu.uts.inmobiliaria.config.Database;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +19,7 @@ public final class AdminServlet extends HttpServlet {
     private static final List<String> ROLES = Arrays.asList("ADMINISTRADOR", "INMOBILIARIA", "CLIENTE", "VISITANTE");
     private final AdminDao adminDao = new AdminDao();
     private final AuditDao auditDao = new AuditDao();
+    private final DatabaseSyncService syncService = DatabaseSyncService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,7 +32,11 @@ public final class AdminServlet extends HttpServlet {
         if (!isAdmin(request)) { response.sendError(HttpServletResponse.SC_FORBIDDEN); return; }
         try {
             String action = value(request, "accion");
-            if ("crearUsuario".equals(action)) {
+            if ("sincronizar".equals(action)) {
+                int tables = syncService.synchronize();
+                auditDao.log(currentUserId(request), "SINCRONIZAR", "base_local", null, tables + " tablas replicadas");
+                redirect(response, request, "sincronizado=ok&tablas=" + tables);
+            } else if ("crearUsuario".equals(action)) {
                 String email = value(request, "correo").toLowerCase();
                 String password = value(request, "password");
                 String role = value(request, "rol").toUpperCase();
@@ -78,6 +85,7 @@ public final class AdminServlet extends HttpServlet {
             request.setAttribute("auditoria", Collections.emptyList());
         }
         request.setAttribute("tituloPagina", "Administración");
+        request.setAttribute("sincronizacionDisponible", Database.isRemoteConfigured() && Database.isLocalSyncEnabled());
         request.getRequestDispatcher("/app/admin.jsp").forward(request, response);
     }
 
