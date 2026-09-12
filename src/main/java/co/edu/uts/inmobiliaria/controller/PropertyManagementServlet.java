@@ -1,6 +1,7 @@
 package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.PropertyDao;
+import co.edu.uts.inmobiliaria.dao.AuditDao;
 import co.edu.uts.inmobiliaria.model.Property;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import javax.servlet.http.Part;
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public final class PropertyManagementServlet extends HttpServlet {
     private final PropertyDao propertyDao = new PropertyDao();
+    private final AuditDao auditDao = new AuditDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -46,7 +48,9 @@ public final class PropertyManagementServlet extends HttpServlet {
         try {
             String action = value(request, "accion");
             if ("desactivar".equals(action)) {
-                propertyDao.deactivate(Integer.parseInt(value(request, "idPropiedad")));
+                String propertyId = value(request, "idPropiedad");
+                propertyDao.deactivate(Integer.parseInt(propertyId));
+                auditDao.log(userId(request), "DESACTIVAR", "propiedad", propertyId, "Baja lógica de propiedad");
                 response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?desactivada=ok");
                 return;
             }
@@ -64,6 +68,7 @@ public final class PropertyManagementServlet extends HttpServlet {
                         value(request, "matricula"), value(request, "direccion"), value(request, "descripcion"),
                         decimal(request, "precio"), integer(request, "habitaciones"), integer(request, "banos"),
                         decimal(request, "area"), imageUrl, features);
+                auditDao.log(userId(request), "ACTUALIZAR", "propiedad", value(request, "idPropiedad"), value(request, "titulo"));
                 response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?actualizada=ok");
                 return;
             }
@@ -71,6 +76,7 @@ public final class PropertyManagementServlet extends HttpServlet {
                     value(request, "operacion").toUpperCase(), value(request, "matricula"), value(request, "direccion"),
                     value(request, "descripcion"), decimal(request, "precio"), integer(request, "habitaciones"),
                     integer(request, "banos"), decimal(request, "area"), imageUrl, features);
+            auditDao.log(userId(request), "CREAR", "propiedad", null, value(request, "titulo"));
             response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?creada=ok");
         } catch (Exception exception) {
             request.setAttribute("errorGestion", exception.getMessage() == null
@@ -116,6 +122,10 @@ public final class PropertyManagementServlet extends HttpServlet {
 
     private static int integer(HttpServletRequest request, String name) {
         return Integer.parseInt(value(request, name));
+    }
+
+    private static int userId(HttpServletRequest request) {
+        return ((Number) request.getSession(false).getAttribute("usuarioId")).intValue();
     }
 
     private static BigDecimal decimal(HttpServletRequest request, String name) {

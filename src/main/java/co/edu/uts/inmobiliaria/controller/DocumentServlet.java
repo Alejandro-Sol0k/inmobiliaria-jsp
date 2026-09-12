@@ -1,6 +1,7 @@
 package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.DocumentDao;
+import co.edu.uts.inmobiliaria.dao.AuditDao;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +21,7 @@ import javax.servlet.http.Part;
 @MultipartConfig(maxFileSize = 8 * 1024 * 1024, maxRequestSize = 9 * 1024 * 1024)
 public final class DocumentServlet extends HttpServlet {
     private final DocumentDao documentDao = new DocumentDao();
+    private final AuditDao auditDao = new AuditDao();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -35,6 +37,7 @@ public final class DocumentServlet extends HttpServlet {
                     throw new IOException("Estado de documento no válido.");
                 }
                 documentDao.updateStatus(Integer.parseInt(value(request, "idDocumento")), status);
+                auditDao.log(userId(request), "CAMBIAR_ESTADO", "documento_solicitud", value(request, "idDocumento"), status);
                 response.sendRedirect(request.getContextPath() + "/app/operaciones?documento=actualizado");
                 return;
             }
@@ -45,6 +48,7 @@ public final class DocumentServlet extends HttpServlet {
             String fileUrl = saveFile(file, request);
             documentDao.create(userId(request), Integer.parseInt(value(request, "idSolicitud")),
                     safeFileName(file.getSubmittedFileName()), fileUrl);
+            auditDao.log(userId(request), "CARGAR", "documento_solicitud", value(request, "idSolicitud"), safeFileName(file.getSubmittedFileName()));
             response.sendRedirect(request.getContextPath() + "/app/operaciones?documento=ok");
         } catch (Exception exception) {
             response.sendRedirect(request.getContextPath() + "/app/operaciones?documentoError=1");

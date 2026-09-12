@@ -1,9 +1,11 @@
 package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.AdminDao;
+import co.edu.uts.inmobiliaria.dao.AuditDao;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collections;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class AdminServlet extends HttpServlet {
     private static final List<String> ROLES = Arrays.asList("ADMINISTRADOR", "INMOBILIARIA", "CLIENTE", "VISITANTE");
     private final AdminDao adminDao = new AdminDao();
+    private final AuditDao auditDao = new AuditDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,14 +33,17 @@ public final class AdminServlet extends HttpServlet {
                 String role = value(request, "rol").toUpperCase();
                 if (!ROLES.contains(role)) throw new IllegalArgumentException("Rol no válido.");
                 adminDao.setRole(integer(request, "idUsuario"), role);
+                auditDao.log(currentUserId(request), "ASIGNAR_ROL", "usuario", value(request, "idUsuario"), role);
                 redirect(response, request, "rol=ok");
             } else if ("estado".equals(action)) {
                 adminDao.toggleUser(integer(request, "idUsuario"), currentUserId(request));
+                auditDao.log(currentUserId(request), "CAMBIAR_ESTADO", "usuario", value(request, "idUsuario"), "Estado de cuenta actualizado");
                 redirect(response, request, "estado=ok");
             } else if ("catalogo".equals(action)) {
                 String name = value(request, "nombre");
                 if (name.isEmpty()) throw new IllegalArgumentException("Escribe un nombre para el catálogo.");
                 adminDao.addCatalog(value(request, "catalogo"), name);
+                auditDao.log(currentUserId(request), "CREAR_CATALOGO", value(request, "catalogo"), null, name);
                 redirect(response, request, "catalogo=ok");
             } else throw new IllegalArgumentException("Acción no válida.");
         } catch (Exception exception) {
@@ -52,9 +58,11 @@ public final class AdminServlet extends HttpServlet {
             request.setAttribute("ciudades", adminDao.findCatalog("ciudad"));
             request.setAttribute("tipos", adminDao.findCatalog("tipo"));
             request.setAttribute("caracteristicas", adminDao.findCatalog("caracteristica"));
+            request.setAttribute("auditoria", auditDao.findRecent(30));
         } catch (Exception exception) {
             request.setAttribute("errorAdmin", "No fue posible cargar el panel administrativo.");
             getServletContext().log("Error en panel administrativo", exception);
+            request.setAttribute("auditoria", Collections.emptyList());
         }
         request.setAttribute("tituloPagina", "Administración");
         request.getRequestDispatcher("/app/admin.jsp").forward(request, response);

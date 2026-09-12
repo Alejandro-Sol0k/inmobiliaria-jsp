@@ -1,6 +1,7 @@
 package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.ProfileDao;
+import co.edu.uts.inmobiliaria.dao.AuditDao;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +21,7 @@ import javax.servlet.http.Part;
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public final class ProfileServlet extends HttpServlet {
     private final ProfileDao profileDao = new ProfileDao();
+    private final AuditDao auditDao = new AuditDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -47,6 +49,7 @@ public final class ProfileServlet extends HttpServlet {
             }
             profileDao.update(userId(request), names, lastNames, document,
                     value(request, "telefono"), value(request, "direccion"), photoUrl);
+            auditDao.log(userId(request), "ACTUALIZAR", "perfil", String.valueOf(userId(request)), "Datos personales actualizados");
             request.getSession(false).setAttribute("usuarioNombres", names);
             request.getSession(false).setAttribute("usuarioApellidos", lastNames);
             request.getSession(false).setAttribute("usuarioFotoUrl", photoUrl);

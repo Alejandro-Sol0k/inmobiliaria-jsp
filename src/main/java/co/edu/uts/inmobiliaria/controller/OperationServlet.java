@@ -3,6 +3,7 @@ package co.edu.uts.inmobiliaria.controller;
 import co.edu.uts.inmobiliaria.dao.OperationDao;
 import co.edu.uts.inmobiliaria.dao.DocumentDao;
 import co.edu.uts.inmobiliaria.dao.PropertyDao;
+import co.edu.uts.inmobiliaria.dao.AuditDao;
 import co.edu.uts.inmobiliaria.model.Property;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -25,6 +26,7 @@ public final class OperationServlet extends HttpServlet {
     private final OperationDao operationDao = new OperationDao();
     private final DocumentDao documentDao = new DocumentDao();
     private final PropertyDao propertyDao = new PropertyDao();
+    private final AuditDao auditDao = new AuditDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -46,6 +48,7 @@ public final class OperationServlet extends HttpServlet {
                 }
                 operationDao.createAppointment(userId, integer(request, "idPropiedad"),
                         Timestamp.valueOf(dateTime), value(request, "observaciones"));
+                auditDao.log(userId, "CREAR", "cita", null, "Solicitud de visita para propiedad " + value(request, "idPropiedad"));
                 redirect(response, request, "cita=ok");
                 return;
             }
@@ -55,6 +58,7 @@ public final class OperationServlet extends HttpServlet {
                     throw new IllegalArgumentException("Selecciona un tipo de solicitud válido.");
                 }
                 operationDao.createRequest(userId, integer(request, "idPropiedad"), operationType);
+                auditDao.log(userId, "CREAR", "solicitud", null, "Solicitud de " + operationType + " para propiedad " + value(request, "idPropiedad"));
                 redirect(response, request, "solicitud=ok");
                 return;
             }
@@ -62,6 +66,7 @@ public final class OperationServlet extends HttpServlet {
                 String status = value(request, "estado").toUpperCase();
                 updateStatus(status, APPOINTMENT_STATUSES);
                 operationDao.updateAppointmentStatus(integer(request, "idCita"), status);
+                auditDao.log(userId, "CAMBIAR_ESTADO", "cita", value(request, "idCita"), status);
                 redirect(response, request, "actualizado=ok");
                 return;
             }
@@ -69,6 +74,7 @@ public final class OperationServlet extends HttpServlet {
                 String status = value(request, "estado").toUpperCase();
                 updateStatus(status, REQUEST_STATUSES);
                 operationDao.updateRequestStatus(integer(request, "idSolicitud"), status);
+                auditDao.log(userId, "CAMBIAR_ESTADO", "solicitud", value(request, "idSolicitud"), status);
                 redirect(response, request, "actualizado=ok");
                 return;
             }

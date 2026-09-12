@@ -2,6 +2,7 @@ package co.edu.uts.inmobiliaria.controller;
 
 import co.edu.uts.inmobiliaria.dao.UserDao;
 import co.edu.uts.inmobiliaria.dao.ProfileDao;
+import co.edu.uts.inmobiliaria.dao.AuditDao;
 import co.edu.uts.inmobiliaria.model.AuthenticatedUser;
 import co.edu.uts.inmobiliaria.model.Profile;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 public final class LoginServlet extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final ProfileDao profileDao = new ProfileDao();
+    private final AuditDao auditDao = new AuditDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,6 +39,7 @@ public final class LoginServlet extends HttpServlet {
         try {
             AuthenticatedUser user = userDao.authenticate(email, password);
             if (user == null) {
+                auditDao.log(null, "LOGIN_FALLIDO", "usuario", null, email);
                 request.setAttribute("errorLogin", "El correo o la contrasena no son validos.");
                 doGet(request, response);
                 return;
@@ -55,6 +58,7 @@ public final class LoginServlet extends HttpServlet {
                 session.setAttribute("usuarioApellidos", profile.getLastNames());
                 session.setAttribute("usuarioFotoUrl", profile.getPhotoUrl());
             }
+            auditDao.log(user.getId(), "LOGIN", "usuario", String.valueOf(user.getId()), "Inicio de sesión exitoso");
             response.sendRedirect(request.getContextPath() + "/app/dashboard.jsp");
         } catch (Exception exception) {
             request.setAttribute("errorLogin", "No fue posible iniciar sesion. Intenta de nuevo.");
