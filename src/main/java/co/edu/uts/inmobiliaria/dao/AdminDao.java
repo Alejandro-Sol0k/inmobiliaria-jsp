@@ -3,6 +3,8 @@ package co.edu.uts.inmobiliaria.dao;
 import co.edu.uts.inmobiliaria.config.Database;
 import co.edu.uts.inmobiliaria.model.AdminUser;
 import co.edu.uts.inmobiliaria.model.CatalogItem;
+import co.edu.uts.inmobiliaria.security.PasswordUtil;
+import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +13,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class AdminDao {
+    public int createUser(String email, String password, String names, String lastNames,
+            String document, String roleName) throws SQLException, GeneralSecurityException {
+        String insertUser = "INSERT INTO usuario (correo, password_hash, password_salt) VALUES (?, ?, ?)";
+        String insertProfile = "INSERT INTO perfil (id_usuario, nombres, apellidos, documento) VALUES (?, ?, ?, ?)";
+        String assignRole = "INSERT INTO usuario_rol (id_usuario, id_rol) SELECT ?, id_rol FROM rol WHERE nombre = ?";
+        String salt = PasswordUtil.newSalt();
+        try (Connection connection = Database.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement user = connection.prepareStatement(insertUser, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                user.setString(1, email);
+                user.setString(2, PasswordUtil.hash(password, salt));
+                user.setString(3, salt);
+                user.executeUpdate();
+                try (ResultSet keys = user.getGeneratedKeys()) {
+                    if (!keys.next()) throw new SQLException("No se pudo obtener el usuario creado.");
+                    int userId = keys.getInt(1);
+                    try (PreparedStatement profile = connection.prepareStatement(insertProfile);
+                            PreparedStatement role = connection.prepareStatement(assignRole)) {
+                        profile.setInt(1, userId);
+                        profile.setString(2, names);
+                        profile.setString(3, lastNames);
+                        profile.setString(4, document);
+                        profile.executeUpdate();
+                        role.setInt(1, userId);
+                        role.setString(2, roleName);
+                        if (role.executeUpdate() == 0) throw new SQLException("El rol seleccionado no existe.");
+                    }
+                    connection.commit();
+                    return userId;
+                }
+            } catch (SQLException | GeneralSecurityException exception) {
+                connection.rollback();
+                if (exception instanceof SQLException && ((SQLException) exception).getErrorCode() == 1062) {
+                    throw new SQLException("El correo o documento ya está registrado.", exception);
+                }
+                throw exception;
+            }
+        }
+    }
+
     public List<AdminUser> findUsers() throws SQLException {
         String sql = "SELECT u.id_usuario, u.correo, u.activo, "
                 + "COALESCE(NULLIF(CONCAT_WS(' ', p.nombres, p.apellidos), ''), 'Sin perfil') AS nombre, "

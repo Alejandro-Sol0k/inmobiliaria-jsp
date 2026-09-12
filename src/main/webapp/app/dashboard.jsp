@@ -1,13 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     request.setAttribute("tituloPagina", "Panel");
+    String nombres = (String) session.getAttribute("usuarioNombres");
+    String apellidos = (String) session.getAttribute("usuarioApellidos");
+    String nombreCompleto = ((nombres == null ? "" : nombres.trim()) + " " + (apellidos == null ? "" : apellidos.trim())).trim();
+    if (nombreCompleto.isEmpty()) nombreCompleto = String.valueOf(session.getAttribute("usuarioCorreo"));
 %>
 <%@ include file="/WEB-INF/jspf/cabecera.jspf" %>
 <%@ include file="/WEB-INF/jspf/navegacion.jspf" %>
 <main class="container py-5">
     <section class="dashboard-hero p-4 p-lg-5 mb-5 shadow-sm">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
-            <div><span class="section-kicker">Área privada</span><h1 class="display-6 fw-bold mt-2 mb-2">Hola, <%= session.getAttribute("usuarioCorreo") %></h1><div class="gold-line mb-3"></div><p class="mb-0 text-white-50">Rol actual: <strong class="text-white"><%= session.getAttribute("usuarioRol") %></strong></p></div>
+            <div><span class="section-kicker">Área privada</span><h1 class="display-6 fw-bold mt-2 mb-2">Hola, <%= nombreCompleto %></h1><div class="gold-line mb-3"></div></div>
             <a class="btn btn-accent" href="<%= request.getContextPath() %>/propiedades">Explorar catálogo</a>
         </div>
     </section>

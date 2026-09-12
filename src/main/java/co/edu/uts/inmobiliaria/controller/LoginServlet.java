@@ -59,7 +59,7 @@ public final class LoginServlet extends HttpServlet {
                 session.setAttribute("usuarioFotoUrl", profile.getPhotoUrl());
             }
             auditDao.log(user.getId(), "LOGIN", "usuario", String.valueOf(user.getId()), "Inicio de sesión exitoso");
-            response.sendRedirect(request.getContextPath() + "/app/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/propiedades");
         } catch (Exception exception) {
             request.setAttribute("errorLogin", "No fue posible iniciar sesion. Intenta de nuevo.");
             doGet(request, response);

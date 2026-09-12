@@ -29,7 +29,20 @@ public final class AdminServlet extends HttpServlet {
         if (!isAdmin(request)) { response.sendError(HttpServletResponse.SC_FORBIDDEN); return; }
         try {
             String action = value(request, "accion");
-            if ("rol".equals(action)) {
+            if ("crearUsuario".equals(action)) {
+                String email = value(request, "correo").toLowerCase();
+                String password = value(request, "password");
+                String role = value(request, "rol").toUpperCase();
+                if (email.isEmpty() || password.length() < 8 || value(request, "nombres").isEmpty()
+                        || value(request, "apellidos").isEmpty() || value(request, "documento").isEmpty()) {
+                    throw new IllegalArgumentException("Completa todos los datos y usa una contraseña de mínimo 8 caracteres.");
+                }
+                if (!ROLES.contains(role)) throw new IllegalArgumentException("Rol no válido.");
+                int createdId = adminDao.createUser(email, password, value(request, "nombres"),
+                        value(request, "apellidos"), value(request, "documento"), role);
+                auditDao.log(currentUserId(request), "CREAR_USUARIO", "usuario", String.valueOf(createdId), role);
+                redirect(response, request, "creado=ok");
+            } else if ("rol".equals(action)) {
                 String role = value(request, "rol").toUpperCase();
                 if (!ROLES.contains(role)) throw new IllegalArgumentException("Rol no válido.");
                 adminDao.setRole(integer(request, "idUsuario"), role);
