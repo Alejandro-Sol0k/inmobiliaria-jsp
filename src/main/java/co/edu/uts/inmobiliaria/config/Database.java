@@ -49,11 +49,11 @@ public final class Database {
 
     public static int getSyncIntervalSeconds() {
         String configured = setting("INMOBILIARIA_SYNC_INTERVAL_SECONDS", "inmobiliaria.sync.interval.seconds");
-        if (configured.isEmpty()) return 60;
+        if (configured.isEmpty()) return 10;
         try {
             return Math.max(10, Math.min(3600, Integer.parseInt(configured)));
         } catch (NumberFormatException exception) {
-            return 60;
+            return 10;
         }
     }
 
