@@ -59,14 +59,16 @@ public final class OperationServlet extends HttpServlet {
                 return;
             }
             if (isManager(request) && "estadoCita".equals(action)) {
-                updateStatus(value(request, "estado"), APPOINTMENT_STATUSES);
-                operationDao.updateAppointmentStatus(integer(request, "idCita"), value(request, "estado").toUpperCase());
+                String status = value(request, "estado").toUpperCase();
+                updateStatus(status, APPOINTMENT_STATUSES);
+                operationDao.updateAppointmentStatus(integer(request, "idCita"), status);
                 redirect(response, request, "actualizado=ok");
                 return;
             }
             if (isManager(request) && "estadoSolicitud".equals(action)) {
-                updateStatus(value(request, "estado"), REQUEST_STATUSES);
-                operationDao.updateRequestStatus(integer(request, "idSolicitud"), value(request, "estado").toUpperCase());
+                String status = value(request, "estado").toUpperCase();
+                updateStatus(status, REQUEST_STATUSES);
+                operationDao.updateRequestStatus(integer(request, "idSolicitud"), status);
                 redirect(response, request, "actualizado=ok");
                 return;
             }
@@ -84,6 +86,11 @@ public final class OperationServlet extends HttpServlet {
         boolean manager = isManager(request);
         try {
             request.setAttribute("propiedades", propertyDao.findPublic("", "", "", null));
+            String selectedProperty = value(request, "propiedad");
+            if (selectedProperty.isEmpty()) {
+                selectedProperty = value(request, "idPropiedad");
+            }
+            request.setAttribute("propiedadSeleccionada", selectedProperty);
             request.setAttribute("citas", operationDao.findAppointments(userId, manager));
             request.setAttribute("solicitudes", operationDao.findRequests(userId, manager));
             request.setAttribute("documentos", documentDao.findDocuments(userId, manager));

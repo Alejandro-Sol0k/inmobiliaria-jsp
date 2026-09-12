@@ -95,20 +95,30 @@ public final class OperationDao {
     }
 
     public void updateAppointmentStatus(int appointmentId, String status) throws SQLException {
-        updateStatus("UPDATE cita SET estado = ? WHERE id_cita = ?", appointmentId, status);
+        String sql = "UPDATE cita SET estado = ? WHERE id_cita = ? AND ("
+                + "(estado = 'PENDIENTE' AND ? IN ('CONFIRMADA', 'CANCELADA')) OR "
+                + "(estado = 'CONFIRMADA' AND ? IN ('ATENDIDA', 'CANCELADA'))"
+                + ")";
+        transitionStatus(sql, appointmentId, status);
     }
 
     public void updateRequestStatus(int requestId, String status) throws SQLException {
-        updateStatus("UPDATE solicitud SET estado = ? WHERE id_solicitud = ?", requestId, status);
+        String sql = "UPDATE solicitud SET estado = ? WHERE id_solicitud = ? AND ("
+                + "(estado = 'RADICADA' AND ? IN ('EN_REVISION', 'RECHAZADA')) OR "
+                + "(estado = 'EN_REVISION' AND ? IN ('APROBADA', 'RECHAZADA'))"
+                + ")";
+        transitionStatus(sql, requestId, status);
     }
 
-    private void updateStatus(String sql, int id, String status) throws SQLException {
+    private void transitionStatus(String sql, int id, String status) throws SQLException {
         try (Connection connection = Database.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, status);
             statement.setInt(2, id);
+            statement.setString(3, status);
+            statement.setString(4, status);
             if (statement.executeUpdate() == 0) {
-                throw new SQLException("No se encontró el registro solicitado.");
+                throw new SQLException("La transición de estado no es válida o el registro no existe.");
             }
         }
     }
