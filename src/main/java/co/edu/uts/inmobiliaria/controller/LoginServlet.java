@@ -22,6 +22,7 @@ public final class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("redirectAfterLogin", safeRedirect(value(request, "redirect")));
         request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
     }
 
@@ -31,6 +32,7 @@ public final class LoginServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String email = value(request, "correo").toLowerCase();
         String password = value(request, "password");
+        String redirect = safeRedirect(value(request, "redirect"));
         if (email.isEmpty() || password.isEmpty()) {
             request.setAttribute("errorLogin", "Ingresa tu correo y contrasena.");
             doGet(request, response);
@@ -59,7 +61,7 @@ public final class LoginServlet extends HttpServlet {
                 session.setAttribute("usuarioFotoUrl", profile.getPhotoUrl());
             }
             auditDao.log(user.getId(), "LOGIN", "usuario", String.valueOf(user.getId()), "Inicio de sesión exitoso");
-            response.sendRedirect(request.getContextPath() + "/propiedades");
+            response.sendRedirect(request.getContextPath() + (redirect.isEmpty() ? "/propiedades" : redirect));
         } catch (Exception exception) {
             request.setAttribute("errorLogin", "No fue posible iniciar sesion. Intenta de nuevo.");
             doGet(request, response);
@@ -69,5 +71,13 @@ public final class LoginServlet extends HttpServlet {
     private static String value(HttpServletRequest request, String name) {
         String value = request.getParameter(name);
         return value == null ? "" : value.trim();
+    }
+
+    private static String safeRedirect(String redirect) {
+        if (redirect == null || redirect.isEmpty() || !redirect.startsWith("/")
+                || redirect.startsWith("//") || redirect.contains("://")) {
+            return "";
+        }
+        return redirect;
     }
 }
