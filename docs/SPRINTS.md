@@ -26,4 +26,5 @@
 - [x] Citas y solicitudes.
 - [x] Documentos y favoritos.
 - [x] Reportes SQL con joins, agrupaciones, solicitudes por inmobiliaria y agregaciones.
-- [ ] Pruebas, despliegue y documentacion final.
+- [x] Documentacion final, matriz de pruebas y guia de despliegue.
+- [ ] Ejecucion y evidencia de pruebas funcionales en XAMPP/Tomcat.
