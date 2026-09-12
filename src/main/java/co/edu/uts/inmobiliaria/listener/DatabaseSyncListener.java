@@ -21,7 +21,8 @@ public final class DatabaseSyncListener implements ServletContextListener {
             thread.setDaemon(true);
             return thread;
         });
-        scheduler.scheduleWithFixedDelay(() -> synchronize(event), 30, 300, TimeUnit.SECONDS);
+        int intervalSeconds = Database.getSyncIntervalSeconds();
+        scheduler.scheduleWithFixedDelay(() -> synchronize(event), 15, intervalSeconds, TimeUnit.SECONDS);
     }
 
     @Override

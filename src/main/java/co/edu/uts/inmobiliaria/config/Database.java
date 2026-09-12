@@ -47,6 +47,16 @@ public final class Database {
         return "true".equalsIgnoreCase(setting("INMOBILIARIA_SYNC_LOCAL", "inmobiliaria.sync.local"));
     }
 
+    public static int getSyncIntervalSeconds() {
+        String configured = setting("INMOBILIARIA_SYNC_INTERVAL_SECONDS", "inmobiliaria.sync.interval.seconds");
+        if (configured.isEmpty()) return 60;
+        try {
+            return Math.max(10, Math.min(3600, Integer.parseInt(configured)));
+        } catch (NumberFormatException exception) {
+            return 60;
+        }
+    }
+
     private static String setting(String environmentName, String propertyName) {
         String property = System.getProperty(propertyName);
         if (property != null && !property.trim().isEmpty()) {
