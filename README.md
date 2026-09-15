@@ -2,9 +2,6 @@
 
 Proyecto web academico para administrar una inmobiliaria, construido desde cero con JSP, JSPF, JDBC, MySQL, HTML5, CSS3 y Bootstrap.
 
-## Regla tecnica del proyecto
-
-Las vistas se implementan en JSP/JSPF. Solo se usan clases `.java` para la infraestructura que debe ejecutarse en el servidor: conexion, seguridad, DAO, servlets y filtros. Tomcat puede generar archivos Java internamente al compilar las JSP, pero esos artefactos quedan fuera del repositorio mediante `.gitignore`.
 
 ## Estructura
 
