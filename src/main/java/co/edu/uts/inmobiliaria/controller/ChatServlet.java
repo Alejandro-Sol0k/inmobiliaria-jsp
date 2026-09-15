@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/app/chat")
+@WebServlet("/app/chat.jsp")
 public final class ChatServlet extends HttpServlet {
     private final ChatDao chatDao = new ChatDao();
     private final PropertyDao propertyDao = new PropertyDao();
@@ -44,7 +44,7 @@ public final class ChatServlet extends HttpServlet {
             if ("seleccionar".equals(action)) {
                 int chatId = integer(request, "idChat");
                 request.getSession(true).setAttribute(SessionState.SELECTED_CHAT, chatId);
-                response.sendRedirect(request.getContextPath() + "/app/chat");
+                response.sendRedirect(request.getContextPath() + "/app/chat.jsp");
                 return;
             }
             if ("crear".equals(action)) {
@@ -90,7 +90,7 @@ public final class ChatServlet extends HttpServlet {
         String legacyChat = value(request, "id");
         if (!legacyChat.isEmpty()) {
             request.getSession(true).setAttribute(SessionState.SELECTED_CHAT, Integer.valueOf(legacyChat));
-            response.sendRedirect(request.getContextPath() + "/app/chat");
+            response.sendRedirect(request.getContextPath() + "/app/chat.jsp");
             return;
         }
         int userId = userId(request);
@@ -123,7 +123,7 @@ public final class ChatServlet extends HttpServlet {
         }
         request.setAttribute("esGestorChat", isManager(role));
         request.setAttribute("tituloPagina", "Chat de soporte");
-        request.getRequestDispatcher("/app/chat.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/chat.jsp").forward(request, response);
     }
 
     private static boolean isManager(String role) {
@@ -166,6 +166,6 @@ public final class ChatServlet extends HttpServlet {
             int chatId, String key, String message) throws IOException {
         request.getSession(false).setAttribute(SessionState.SELECTED_CHAT, chatId);
         SessionState.flash(request.getSession(false), key, message);
-        response.sendRedirect(request.getContextPath() + "/app/chat");
+        response.sendRedirect(request.getContextPath() + "/app/chat.jsp");
     }
 }

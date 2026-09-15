@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-@WebServlet("/app/gestion-propiedades")
+@WebServlet("/app/gestion-propiedades.jsp")
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public final class PropertyManagementServlet extends HttpServlet {
     private final PropertyDao propertyDao = new PropertyDao();
@@ -50,12 +50,12 @@ public final class PropertyManagementServlet extends HttpServlet {
             if ("editar".equals(action)) {
                 request.getSession(true).setAttribute(SessionState.EDIT_PROPERTY,
                         Integer.valueOf(value(request, "idPropiedad")));
-                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades.jsp");
                 return;
             }
             if ("cancelar".equals(action)) {
                 request.getSession(true).removeAttribute(SessionState.EDIT_PROPERTY);
-                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades.jsp");
                 return;
             }
             if ("desactivar".equals(action)) {
@@ -63,7 +63,7 @@ public final class PropertyManagementServlet extends HttpServlet {
                 propertyDao.deactivate(Integer.parseInt(propertyId));
                 auditDao.log(userId(request), "DESACTIVAR", "propiedad", propertyId, "Baja lógica de propiedad");
                 SessionState.flash(request.getSession(false), "success", "La propiedad fue dada de baja lógicamente.");
-                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades.jsp");
                 return;
             }
             String imageUrl = value(request, "imagenUrl");
@@ -83,7 +83,7 @@ public final class PropertyManagementServlet extends HttpServlet {
                 auditDao.log(userId(request), "ACTUALIZAR", "propiedad", value(request, "idPropiedad"), value(request, "titulo"));
                 request.getSession(false).removeAttribute(SessionState.EDIT_PROPERTY);
                 SessionState.flash(request.getSession(false), "success", "La publicación fue actualizada correctamente.");
-                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades.jsp");
                 return;
             }
             propertyDao.create(value(request, "titulo"), value(request, "ciudad"), value(request, "tipo"),
@@ -92,7 +92,7 @@ public final class PropertyManagementServlet extends HttpServlet {
                     integer(request, "banos"), decimal(request, "area"), imageUrl, features);
             auditDao.log(userId(request), "CREAR", "propiedad", null, value(request, "titulo"));
             SessionState.flash(request.getSession(false), "success", "La propiedad fue creada correctamente.");
-            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades.jsp");
         } catch (Exception exception) {
             request.setAttribute("errorGestion", exception.getMessage() == null
                     ? "No fue posible guardar la propiedad." : exception.getMessage());
@@ -106,7 +106,7 @@ public final class PropertyManagementServlet extends HttpServlet {
         String legacyEdit = value(request, "editar");
         if (!legacyEdit.isEmpty()) {
             request.getSession(true).setAttribute(SessionState.EDIT_PROPERTY, Integer.valueOf(legacyEdit));
-            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades.jsp");
             return;
         }
         try {
@@ -130,7 +130,7 @@ public final class PropertyManagementServlet extends HttpServlet {
             getServletContext().log("Error en la gestión de propiedades", exception);
         }
         request.setAttribute("tituloPagina", "Gestión de propiedades");
-        request.getRequestDispatcher("/app/gestion-propiedades.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/gestion-propiedades.jsp").forward(request, response);
     }
 
     private static boolean isManager(HttpServletRequest request) {

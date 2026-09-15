@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/app/reportes")
+@WebServlet("/app/reportes.jsp")
 public final class ReportServlet extends HttpServlet {
     private final ReportDao reportDao = new ReportDao();
 
@@ -30,7 +30,7 @@ public final class ReportServlet extends HttpServlet {
             getServletContext().log("Error generando reportes", exception);
         }
         request.setAttribute("tituloPagina", "Reportes");
-        request.getRequestDispatcher("/app/reportes.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/reportes.jsp").forward(request, response);
     }
 
     private static boolean isManager(HttpServletRequest request) {

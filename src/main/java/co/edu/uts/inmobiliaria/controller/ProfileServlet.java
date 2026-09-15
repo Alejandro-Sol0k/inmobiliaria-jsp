@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-@WebServlet("/app/perfil")
+@WebServlet("/app/perfil.jsp")
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 6 * 1024 * 1024)
 public final class ProfileServlet extends HttpServlet {
     private final ProfileDao profileDao = new ProfileDao();
@@ -54,7 +54,7 @@ public final class ProfileServlet extends HttpServlet {
             request.getSession(false).setAttribute("usuarioApellidos", lastNames);
             request.getSession(false).setAttribute("usuarioFotoUrl", photoUrl);
             SessionState.flash(request.getSession(false), "success", "Tu perfil fue actualizado correctamente.");
-            response.sendRedirect(request.getContextPath() + "/app/perfil");
+            response.sendRedirect(request.getContextPath() + "/app/perfil.jsp");
         } catch (Exception exception) {
             request.setAttribute("errorPerfil", exception.getMessage() == null
                     ? "No fue posible actualizar el perfil." : exception.getMessage());
@@ -72,7 +72,7 @@ public final class ProfileServlet extends HttpServlet {
             getServletContext().log("Error consultando el perfil", exception);
         }
         request.setAttribute("tituloPagina", "Mi perfil");
-        request.getRequestDispatcher("/app/perfil.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/perfil.jsp").forward(request, response);
     }
 
     private static int userId(HttpServletRequest request) {

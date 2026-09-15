@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/app/favoritos")
+@WebServlet("/app/favoritos.jsp")
 public final class FavoriteServlet extends HttpServlet {
     private final FavoriteDao favoriteDao = new FavoriteDao();
 
@@ -25,7 +25,7 @@ public final class FavoriteServlet extends HttpServlet {
             getServletContext().log("Error cargando favoritos", exception);
         }
         request.setAttribute("tituloPagina", "Mis favoritos");
-        request.getRequestDispatcher("/app/favoritos.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/favoritos.jsp").forward(request, response);
     }
 
     @Override
@@ -40,10 +40,10 @@ public final class FavoriteServlet extends HttpServlet {
                 favoriteDao.add(userId(request), propertyId);
             }
             SessionState.flash(request.getSession(false), "success", "Tus favoritos fueron actualizados.");
-            response.sendRedirect(request.getContextPath() + "/app/favoritos");
+            response.sendRedirect(request.getContextPath() + "/app/favoritos.jsp");
         } catch (Exception exception) {
             SessionState.flash(request.getSession(false), "error", "No fue posible actualizar tus favoritos.");
-            response.sendRedirect(request.getContextPath() + "/app/favoritos");
+            response.sendRedirect(request.getContextPath() + "/app/favoritos.jsp");
         }
     }
 

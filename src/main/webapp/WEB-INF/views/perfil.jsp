@@ -27,7 +27,7 @@
                     <div class="col-lg-8 p-4 p-lg-5">
                         <% if (request.getAttribute("mensajePerfil") != null) { %><div class="alert alert-success"><%= request.getAttribute("mensajePerfil") %></div><% } %>
                         <% if (request.getAttribute("errorPerfil") != null) { %><div class="alert alert-danger"><%= request.getAttribute("errorPerfil") %></div><% } %>
-                        <form action="<%= request.getContextPath() %>/app/perfil" method="post" enctype="multipart/form-data" class="row g-3 profile-form">
+                        <form action="<%= request.getContextPath() %>/app/perfil.jsp" method="post" enctype="multipart/form-data" class="row g-3 profile-form">
                             <div class="col-md-6"><label class="form-label" for="nombres">Nombres</label><input class="form-control" id="nombres" name="nombres" value="<%= nombres %>" placeholder="Ej. Joel" required></div>
                             <div class="col-md-6"><label class="form-label" for="apellidos">Apellidos</label><input class="form-control" id="apellidos" name="apellidos" value="<%= apellidos %>" placeholder="Ej. Contreras" required></div>
                             <div class="col-md-6"><label class="form-label" for="documento">Documento</label><input class="form-control" id="documento" name="documento" value="<%= documento %>" placeholder="Ej. 1098765432" required></div>

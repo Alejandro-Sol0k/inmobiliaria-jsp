@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/app/admin")
+@WebServlet("/app/admin.jsp")
 public final class AdminServlet extends HttpServlet {
     private static final List<String> ROLES = Arrays.asList("ADMINISTRADOR", "INMOBILIARIA", "CLIENTE");
     private final AdminDao adminDao = new AdminDao();
@@ -82,7 +82,7 @@ public final class AdminServlet extends HttpServlet {
         request.setAttribute("tituloPagina", "Administración");
         request.setAttribute("sincronizacionAutomatica", Database.isRemoteConfigured() && Database.isLocalSyncEnabled());
         request.setAttribute("sincronizacionIntervalo", Database.getSyncIntervalSeconds());
-        request.getRequestDispatcher("/app/admin.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin.jsp").forward(request, response);
     }
 
     private static boolean isAdmin(HttpServletRequest request) {
@@ -94,6 +94,6 @@ public final class AdminServlet extends HttpServlet {
     private static String value(HttpServletRequest request, String name) { String value = request.getParameter(name); return value == null ? "" : value.trim(); }
     private static void redirect(HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
         SessionState.flash(request.getSession(false), "success", message);
-        response.sendRedirect(request.getContextPath() + "/app/admin");
+        response.sendRedirect(request.getContextPath() + "/app/admin.jsp");
     }
 }

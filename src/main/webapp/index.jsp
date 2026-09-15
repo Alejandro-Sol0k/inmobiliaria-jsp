@@ -57,9 +57,7 @@
                     <article class="card property-card h-100 border-0 shadow-sm overflow-hidden">
                         <form action="<%= request.getContextPath() %>/propiedad.jsp" method="post" class="property-detail-form">
                             <input type="hidden" name="id" value="<%= propiedad.getId() %>">
-                            <button class="property-image-link" type="submit" aria-label="Ver detalle de <%= propiedad.getTitle() %>">
-                                <div class="ratio ratio-16x9 bg-brand"><img src="<%= imagen %>" class="object-fit-cover" alt="Imagen de <%= propiedad.getTitle() %>"></div>
-                            </button>
+                            <button class="property-image-link" type="submit" aria-label="Ver detalle de <%= propiedad.getTitle() %>"><img src="<%= imagen %>" class="object-fit-cover" alt="Imagen de <%= propiedad.getTitle() %>"></button>
                         </form>
                         <div class="card-body d-flex flex-column">
                             <span class="badge text-bg-light align-self-start mb-2"><%= propiedad.getOperation() %></span>

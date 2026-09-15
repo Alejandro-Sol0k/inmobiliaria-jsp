@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/app/operaciones")
+@WebServlet("/app/operaciones.jsp")
 public final class OperationServlet extends HttpServlet {
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     private static final List<String> APPOINTMENT_STATUSES = Arrays.asList("PENDIENTE", "CONFIRMADA", "CANCELADA", "ATENDIDA");
@@ -97,7 +97,7 @@ public final class OperationServlet extends HttpServlet {
         if (legacyProperty.isEmpty()) legacyProperty = value(request, "idPropiedad");
         if (!legacyProperty.isEmpty()) {
             request.getSession(true).setAttribute(SessionState.SELECTED_PROPERTY, Integer.valueOf(legacyProperty));
-            response.sendRedirect(request.getContextPath() + "/app/operaciones");
+            response.sendRedirect(request.getContextPath() + "/app/operaciones.jsp");
             return;
         }
         int userId = userId(request);
@@ -126,7 +126,7 @@ public final class OperationServlet extends HttpServlet {
         }
         request.setAttribute("esGestor", manager);
         request.setAttribute("tituloPagina", "Citas y solicitudes");
-        request.getRequestDispatcher("/app/operaciones.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/operaciones.jsp").forward(request, response);
     }
 
     private static void updateStatus(String status, List<String> allowed) {
@@ -138,7 +138,7 @@ public final class OperationServlet extends HttpServlet {
     private static void redirect(HttpServletResponse response, HttpServletRequest request, String key, String message)
             throws IOException {
         SessionState.flash(request.getSession(false), key, message);
-        response.sendRedirect(request.getContextPath() + "/app/operaciones");
+        response.sendRedirect(request.getContextPath() + "/app/operaciones.jsp");
     }
 
     private static boolean isManager(HttpServletRequest request) {

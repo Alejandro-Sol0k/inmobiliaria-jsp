@@ -24,7 +24,7 @@
 | F08 | Crear propiedad como Inmobiliaria | Se guarda imagen por URL o archivo y características. |
 | F09 | Crear usuario como Administrador | Se crea perfil, contraseña PBKDF2 y rol seleccionado. |
 | F10 | Consultar auditoría como Administrador | Se muestran las acciones recientes. |
-| F11 | Intentar `/app/admin` como Inmobiliaria | El servidor responde 403. |
+| F11 | Intentar `/app/admin.jsp` como Inmobiliaria | El servidor responde 403. |
 | F12 | Cargar documento de solicitud | El cliente lo carga y el gestor puede cambiar su estado. |
 | F13 | Crear chat como cliente | Se asigna a un inmobiliario activo y solo los participantes ven los mensajes. |
 | F14 | Responder y cerrar chat | Cliente/inmobiliario pueden responder mientras está abierto; solo el gestor puede cerrarlo. |

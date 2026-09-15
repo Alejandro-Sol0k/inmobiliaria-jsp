@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-@WebServlet("/app/documentos")
+@WebServlet("/app/documentos.jsp")
 @MultipartConfig(maxFileSize = 8 * 1024 * 1024, maxRequestSize = 9 * 1024 * 1024)
 public final class DocumentServlet extends HttpServlet {
     private final DocumentDao documentDao = new DocumentDao();
@@ -39,7 +39,7 @@ public final class DocumentServlet extends HttpServlet {
                 documentDao.updateStatus(Integer.parseInt(value(request, "idDocumento")), status);
                 auditDao.log(userId(request), "CAMBIAR_ESTADO", "documento_solicitud", value(request, "idDocumento"), status);
                 SessionState.flash(request.getSession(false), "success", "El estado del documento fue actualizado.");
-                response.sendRedirect(request.getContextPath() + "/app/operaciones");
+                response.sendRedirect(request.getContextPath() + "/app/operaciones.jsp");
                 return;
             }
             Part file = request.getPart("archivo");
@@ -51,10 +51,10 @@ public final class DocumentServlet extends HttpServlet {
                     safeFileName(file.getSubmittedFileName()), fileUrl);
             auditDao.log(userId(request), "CARGAR", "documento_solicitud", value(request, "idSolicitud"), safeFileName(file.getSubmittedFileName()));
             SessionState.flash(request.getSession(false), "success", "El documento fue cargado correctamente.");
-            response.sendRedirect(request.getContextPath() + "/app/operaciones");
+            response.sendRedirect(request.getContextPath() + "/app/operaciones.jsp");
         } catch (Exception exception) {
             SessionState.flash(request.getSession(false), "error", "No fue posible cargar el documento. Usa PDF, JPG o PNG de máximo 8 MB.");
-            response.sendRedirect(request.getContextPath() + "/app/operaciones");
+            response.sendRedirect(request.getContextPath() + "/app/operaciones.jsp");
         }
     }
 
