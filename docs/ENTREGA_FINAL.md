@@ -19,9 +19,9 @@ La autorización se aplica en el servidor mediante `AuthFilter` y validaciones d
 
 | Requisito | Evidencia en el proyecto |
 |---|---|
-| Landing y autenticación | `src/main/webapp/index.jsp`, `auth/`, `LoginServlet`, `RegisterServlet` |
+| Landing y autenticación | `inicio.jsp`, `propiedad.jsp`, `auth/login.jsp`, `HomeServlet`, `LoginServlet`, `RegisterServlet` |
 | Roles y sesiones | `AuthFilter`, `WEB-INF/jspf/navegacion.jspf`, `AdminServlet` |
-| Propiedades, filtros y detalle | `PropertyDao`, `PropertyServlet`, `PropertyManagementServlet`, `detalle-propiedad.jsp` |
+| Propiedades, filtros y detalle | `propiedades.jsp`, `propiedad.jsp`, `PropertyDao`, `PropertyServlet`, `PropertyManagementServlet` |
 | Galería e imágenes | `imagen_propiedad`, `03_consultas_obligatorias.sql`, catálogo y detalle |
 | Citas y solicitudes | `OperationServlet`, `OperationDao`, `app/operaciones.jsp` |
 | Documentos | `DocumentServlet`, `DocumentDao` |

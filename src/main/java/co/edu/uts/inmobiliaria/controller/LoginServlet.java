@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/auth/login")
+@WebServlet("/auth/login.jsp")
 public final class LoginServlet extends HttpServlet {
     private final UserDao userDao = new UserDao();
     private final ProfileDao profileDao = new ProfileDao();
@@ -23,7 +23,7 @@ public final class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("redirectAfterLogin", safeRedirect(value(request, "redirect")));
-        request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/auth/login-form.jsp").forward(request, response);
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class LoginServlet extends HttpServlet {
                 session.setAttribute("usuarioFotoUrl", profile.getPhotoUrl());
             }
             auditDao.log(user.getId(), "LOGIN", "usuario", String.valueOf(user.getId()), "Inicio de sesión exitoso");
-            response.sendRedirect(request.getContextPath() + (redirect.isEmpty() ? "/propiedades" : redirect));
+            response.sendRedirect(request.getContextPath() + (redirect.isEmpty() ? "/propiedades.jsp" : redirect));
         } catch (Exception exception) {
             request.setAttribute("errorLogin", "No fue posible iniciar sesion. Intenta de nuevo.");
             doGet(request, response);

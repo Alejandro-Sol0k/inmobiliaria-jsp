@@ -2,7 +2,7 @@
 <%@ page import="co.edu.uts.inmobiliaria.model.Property,java.util.Collections,java.util.List" %>
 <%!
     private String urlDetalle(String contextPath, int propiedadId) {
-        return contextPath + "/propiedad?id=" + propiedadId;
+        return contextPath + "/propiedad.jsp?id=" + propiedadId;
     }
 %>
 <%
@@ -23,13 +23,13 @@
                     <span class="badge rounded-pill text-bg-warning mb-3">Encuentra tu proximo espacio</span>
                     <h1 class="display-4 fw-bold">Propiedades que se sienten como hogar.</h1>
                     <p class="lead mt-3 mb-4">Explora inmuebles seleccionados en Bucaramanga y su área metropolitana con el respaldo de Altaltium Real Estate.</p>
-                    <a class="btn btn-accent btn-lg px-4" href="<%= request.getContextPath() %>/propiedades">Explorar propiedades</a>
+                    <a class="btn btn-accent btn-lg px-4" href="<%= request.getContextPath() %>/propiedades.jsp">Explorar propiedades</a>
                 </div>
                 <div class="col-lg-5">
                     <div class="text-center mb-4"><img class="hero-logo" src="<%= request.getContextPath() %>/assets/images/altaltium-logo.png" alt="Altaltium Real Estate"></div>
                     <div class="hero-card rounded-4 p-4 shadow-lg">
                         <p class="text-uppercase small fw-semibold mb-3">Busqueda rapida</p>
-                        <form action="<%= request.getContextPath() %>/propiedades" method="get" class="row g-3">
+                        <form action="<%= request.getContextPath() %>/propiedades.jsp" method="get" class="row g-3">
                             <div class="col-12"><label class="form-label" for="busquedaCiudad">Ciudad</label><input class="form-control" id="busquedaCiudad" name="ciudad" placeholder="Ej. Bucaramanga"></div>
                             <div class="col-6"><label class="form-label" for="busquedaOperacion">Operacion</label><select class="form-select" id="busquedaOperacion" name="operacion"><option value="">Todas</option><option value="VENTA">Venta</option><option value="ARRIENDO">Arriendo</option></select></div>
                             <div class="col-6"><label class="form-label" for="busquedaTipo">Tipo</label><select class="form-select" id="busquedaTipo" name="tipo"><option value="">Todos</option><option value="CASA">Casa</option><option value="APARTAMENTO">Apartamento</option><option value="OFICINA">Oficina</option><option value="TERRENO">Terreno</option></select></div>

@@ -13,11 +13,11 @@
 
 | ID | Caso | Resultado esperado |
 |---|---|---|
-| F01 | Abrir `/inmobiliaria-jsp/` | Se muestra la landing y el catálogo público. |
+| F01 | Abrir `/inmobiliaria-jsp/inicio.jsp` | Se muestra la landing y el catálogo público. |
 | F02 | Registrar cliente con correo/documento nuevos | Se crea usuario, perfil y rol CLIENTE. |
-| F03 | Iniciar sesión | Redirección al catálogo de propiedades. |
+| F03 | Abrir `/inmobiliaria-jsp/auth/login.jsp` e iniciar sesión | Redirección a `/propiedades.jsp`. |
 | F04 | Filtrar por ciudad, tipo, operación y precio | Solo aparecen propiedades activas coincidentes. |
-| F05 | Clic en imagen del catálogo | Se abre el detalle de la propiedad. |
+| F05 | Abrir `/inmobiliaria-jsp/propiedad.jsp?id=3` o clicar una imagen del catálogo | Se abre el detalle de la propiedad. |
 | F06 | Solicitar visita desde detalle | Operaciones abre con propiedad e imagen seleccionadas. |
 | F07 | Cambiar estado de cita | Solo se permiten transiciones válidas. |
 | F08 | Crear propiedad como Inmobiliaria | Se guarda imagen por URL o archivo y características. |

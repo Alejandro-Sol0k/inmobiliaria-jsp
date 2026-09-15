@@ -22,7 +22,7 @@
 <%@ include file="/WEB-INF/jspf/cabecera.jspf" %>
 <%@ include file="/WEB-INF/jspf/navegacion.jspf" %>
 <main class="container py-5">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4"><div><span class="section-kicker">Sprint 2 · Administración</span><h1 class="fw-bold mb-1">Gestión de propiedades</h1><p class="text-secondary mb-0">Publica y administra el inventario de Altaltium Real Estate.</p></div><a class="btn btn-outline-dark" href="<%= request.getContextPath() %>/propiedades">Ver catálogo público</a></div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4"><div><span class="section-kicker">Sprint 2 · Administración</span><h1 class="fw-bold mb-1">Gestión de propiedades</h1><p class="text-secondary mb-0">Publica y administra el inventario de Altaltium Real Estate.</p></div><a class="btn btn-outline-dark" href="<%= request.getContextPath() %>/propiedades.jsp">Ver catálogo público</a></div>
     <% if ("ok".equals(request.getParameter("creada"))) { %><div class="alert alert-success">La propiedad fue creada correctamente.</div><% } %>
     <% if ("ok".equals(request.getParameter("actualizada"))) { %><div class="alert alert-success">La publicación fue actualizada correctamente.</div><% } %>
     <% if ("ok".equals(request.getParameter("desactivada"))) { %><div class="alert alert-success">La propiedad fue dada de baja lógicamente.</div><% } %>

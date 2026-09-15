@@ -1,12 +1,12 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-brand">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="<%= request.getContextPath() %>/inicio">ALTALTIUM</a>
+        <a class="navbar-brand fw-bold" href="<%= request.getContextPath() %>/inicio.jsp">ALTALTIUM</a>
         <div id="menuPrincipal" class="navbar-collapse">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/propiedades">Propiedades</a></li>
+                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/propiedades.jsp">Propiedades</a></li>
                 <% if (session.getAttribute("usuarioId") == null) { %>
-                    <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/auth/login">Ingresar</a></li>
-                    <li class="nav-item"><a class="btn btn-light btn-sm px-3" href="<%= request.getContextPath() %>/auth/registro">Crear cuenta</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/auth/login.jsp">Ingresar</a></li>
+                    <li class="nav-item"><a class="btn btn-light btn-sm px-3" href="<%= request.getContextPath() %>/auth/registro.jsp">Crear cuenta</a></li>
                 <% } else { %>
                     <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/dashboard.jsp">Panel</a></li><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/operaciones">Operaciones</a></li><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/chat">Chat</a></li><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/favoritos">Favoritos</a></li><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/perfil">Perfil</a></li>
                     <% if ("INMOBILIARIA".equals(session.getAttribute("usuarioRol")) || "ADMINISTRADOR".equals(session.getAttribute("usuarioRol"))) { %><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/gestion-propiedades">Gestionar</a></li><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/reportes">Reportes</a></li><% } %><% if ("ADMINISTRADOR".equals(session.getAttribute("usuarioRol"))) { %><li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/app/admin">Administrar</a></li><% } %>

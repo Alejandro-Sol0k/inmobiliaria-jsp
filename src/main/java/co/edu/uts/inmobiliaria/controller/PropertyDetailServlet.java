@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/propiedad")
+@WebServlet("/propiedad.jsp")
 public final class PropertyDetailServlet extends HttpServlet {
     private final PropertyDao propertyDao = new PropertyDao();
 

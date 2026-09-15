@@ -22,7 +22,7 @@ src/main/webapp/
   WEB-INF/jspf/                   Conexion, seguridad y layout reutilizable
   WEB-INF/web.xml                 Configuracion de la aplicacion
   META-INF/context.xml            Recurso JDBC para Tomcat
-  index.jsp                       Landing page publica
+  inicio.jsp                      Ruta publica de la landing atendida por HomeServlet
 ```
 
 ## Puesta en marcha
@@ -31,6 +31,14 @@ src/main/webapp/
 2. Configurar el recurso `jdbc/inmobiliaria` en `META-INF/context.xml` o en la configuracion del servidor Tomcat. En XAMPP se deja `password=""` si el usuario `root` no tiene contraseña.
 3. Copiar el conector JDBC de MySQL en `WEB-INF/lib` sin versionarlo si el entorno lo administra externamente.
 4. Desplegar `src/main/webapp` como aplicacion web en Tomcat.
+
+## Rutas públicas atendidas por servlets
+
+- `inicio.jsp`: landing y propiedades destacadas.
+- `propiedades.jsp`: catálogo y filtros.
+- `propiedad.jsp?id=3`: detalle de una propiedad.
+- `auth/login.jsp`: inicio de sesión.
+- `auth/login.jsp?redirect=%2Fpropiedad.jsp%3Fid%3D3`: inicio de sesión y retorno al detalle solicitado.
 
 # Sprints
 

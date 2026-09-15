@@ -13,8 +13,8 @@
     List<String> imagenes = (List<String>) request.getAttribute("imagenes");
     List<String> caracteristicas = (List<String>) request.getAttribute("caracteristicas");
     boolean autenticado = session != null && session.getAttribute("usuarioId") != null;
-    String loginParaOperacion = request.getContextPath() + "/auth/login?redirect="
-            + URLEncoder.encode("/propiedad?id=" + (propiedad == null ? "" : propiedad.getId()), "UTF-8");
+    String loginParaOperacion = request.getContextPath() + "/auth/login.jsp?redirect="
+            + URLEncoder.encode("/propiedad.jsp?id=" + (propiedad == null ? "" : propiedad.getId()), "UTF-8");
 %>
 <%@ include file="/WEB-INF/jspf/cabecera.jspf" %>
 <%@ include file="/WEB-INF/jspf/navegacion.jspf" %>

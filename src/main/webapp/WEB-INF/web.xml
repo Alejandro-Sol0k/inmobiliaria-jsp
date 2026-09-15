@@ -6,7 +6,7 @@
     <display-name>Altaltium Real Estate JSP</display-name>
 
     <welcome-file-list>
-        <welcome-file>inicio</welcome-file>
+        <welcome-file>inicio.jsp</welcome-file>
     </welcome-file-list>
 
     <session-config>
