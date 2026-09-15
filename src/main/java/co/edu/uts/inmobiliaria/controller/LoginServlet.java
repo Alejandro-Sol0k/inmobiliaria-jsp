@@ -22,7 +22,13 @@ public final class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("redirectAfterLogin", safeRedirect(value(request, "redirect")));
+        String legacyRedirect = safeRedirect(value(request, "redirect"));
+        if (!value(request, "redirect").isEmpty()) {
+            request.getSession(true).setAttribute(SessionState.LOGIN_TARGET, legacyRedirect);
+            response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
+            return;
+        }
+        request.setAttribute("mensajeLogin", SessionState.consumeFlash(request.getSession(false), "success"));
         request.getRequestDispatcher("/auth/login-form.jsp").forward(request, response);
     }
 
@@ -32,7 +38,6 @@ public final class LoginServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String email = value(request, "correo").toLowerCase();
         String password = value(request, "password");
-        String redirect = safeRedirect(value(request, "redirect"));
         if (email.isEmpty() || password.isEmpty()) {
             request.setAttribute("errorLogin", "Ingresa tu correo y contrasena.");
             doGet(request, response);
@@ -47,6 +52,8 @@ public final class LoginServlet extends HttpServlet {
                 return;
             }
             HttpSession oldSession = request.getSession(false);
+            Integer selectedProperty = SessionState.integerAttribute(oldSession, SessionState.SELECTED_PROPERTY);
+            String loginTarget = oldSession == null ? null : (String) oldSession.getAttribute(SessionState.LOGIN_TARGET);
             if (oldSession != null) {
                 oldSession.invalidate();
             }
@@ -60,8 +67,11 @@ public final class LoginServlet extends HttpServlet {
                 session.setAttribute("usuarioApellidos", profile.getLastNames());
                 session.setAttribute("usuarioFotoUrl", profile.getPhotoUrl());
             }
+            if (selectedProperty != null) {
+                session.setAttribute(SessionState.SELECTED_PROPERTY, selectedProperty);
+            }
             auditDao.log(user.getId(), "LOGIN", "usuario", String.valueOf(user.getId()), "Inicio de sesión exitoso");
-            response.sendRedirect(request.getContextPath() + (redirect.isEmpty() ? "/propiedades.jsp" : redirect));
+            response.sendRedirect(request.getContextPath() + safeRedirect(loginTarget));
         } catch (Exception exception) {
             request.setAttribute("errorLogin", "No fue posible iniciar sesion. Intenta de nuevo.");
             doGet(request, response);
@@ -76,7 +86,7 @@ public final class LoginServlet extends HttpServlet {
     private static String safeRedirect(String redirect) {
         if (redirect == null || redirect.isEmpty() || !redirect.startsWith("/")
                 || redirect.startsWith("//") || redirect.contains("://")) {
-            return "";
+            return "/propiedades.jsp";
         }
         return redirect;
     }

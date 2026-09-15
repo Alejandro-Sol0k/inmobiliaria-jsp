@@ -53,7 +53,8 @@ public final class ProfileServlet extends HttpServlet {
             request.getSession(false).setAttribute("usuarioNombres", names);
             request.getSession(false).setAttribute("usuarioApellidos", lastNames);
             request.getSession(false).setAttribute("usuarioFotoUrl", photoUrl);
-            response.sendRedirect(request.getContextPath() + "/app/perfil?actualizado=ok");
+            SessionState.flash(request.getSession(false), "success", "Tu perfil fue actualizado correctamente.");
+            response.sendRedirect(request.getContextPath() + "/app/perfil");
         } catch (Exception exception) {
             request.setAttribute("errorPerfil", exception.getMessage() == null
                     ? "No fue posible actualizar el perfil." : exception.getMessage());
@@ -63,6 +64,7 @@ public final class ProfileServlet extends HttpServlet {
 
     private void loadPage(HttpServletRequest request, HttpServletResponse response, int userId)
             throws ServletException, IOException {
+        request.setAttribute("mensajePerfil", SessionState.consumeFlash(request.getSession(false), "success"));
         try {
             request.setAttribute("perfil", profileDao.findByUserId(userId));
         } catch (Exception exception) {

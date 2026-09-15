@@ -1,5 +1,6 @@
 package co.edu.uts.inmobiliaria.filter;
 
+import co.edu.uts.inmobiliaria.controller.SessionState;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,6 +26,8 @@ public final class AuthFilter implements Filter {
         Object userId = httpRequest.getSession(false) == null
                 ? null : httpRequest.getSession(false).getAttribute("usuarioId");
         if (userId == null) {
+            httpRequest.getSession(true).setAttribute(SessionState.LOGIN_TARGET,
+                    httpRequest.getRequestURI().substring(httpRequest.getContextPath().length()));
             httpResponse.sendRedirect(httpRequest.getContextPath() + "/auth/login.jsp");
             return;
         }

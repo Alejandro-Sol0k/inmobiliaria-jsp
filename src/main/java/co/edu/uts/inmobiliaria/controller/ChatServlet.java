@@ -41,6 +41,12 @@ public final class ChatServlet extends HttpServlet {
         String role = role(request);
         try {
             String action = value(request, "accion");
+            if ("seleccionar".equals(action)) {
+                int chatId = integer(request, "idChat");
+                request.getSession(true).setAttribute(SessionState.SELECTED_CHAT, chatId);
+                response.sendRedirect(request.getContextPath() + "/app/chat");
+                return;
+            }
             if ("crear".equals(action)) {
                 requireRole(role, "CLIENTE");
                 String subject = value(request, "asunto");
@@ -50,7 +56,7 @@ public final class ChatServlet extends HttpServlet {
                 }
                 int chatId = chatDao.createConversation(userId, integerOrZero(request, "idPropiedad"), subject, message);
                 auditDao.log(userId, "CREAR", "chat", String.valueOf(chatId), subject);
-                redirect(response, request, chatId, "creado=ok");
+                redirect(response, request, chatId, "success", "La conversación fue creada.");
                 return;
             }
             if ("mensaje".equals(action)) {
@@ -59,7 +65,7 @@ public final class ChatServlet extends HttpServlet {
                 int chatId = integer(request, "idChat");
                 chatDao.addMessage(chatId, userId, message, role);
                 auditDao.log(userId, "ENVIAR", "chat_mensaje", String.valueOf(chatId), "Mensaje enviado");
-                redirect(response, request, chatId, "enviado=ok");
+                redirect(response, request, chatId, "success", "Mensaje enviado.");
                 return;
             }
             if ("cerrar".equals(action)) {
@@ -67,7 +73,7 @@ public final class ChatServlet extends HttpServlet {
                 int chatId = integer(request, "idChat");
                 chatDao.closeConversation(chatId, userId, role);
                 auditDao.log(userId, "CERRAR", "chat", String.valueOf(chatId), "Conversación cerrada");
-                redirect(response, request, chatId, "cerrado=ok");
+                redirect(response, request, chatId, "success", "La conversación fue cerrada por la inmobiliaria.");
                 return;
             }
             throw new IllegalArgumentException("Acción de chat no válida.");
@@ -80,6 +86,13 @@ public final class ChatServlet extends HttpServlet {
 
     private void loadPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("mensajeChat", SessionState.consumeFlash(request.getSession(false), "success"));
+        String legacyChat = value(request, "id");
+        if (!legacyChat.isEmpty()) {
+            request.getSession(true).setAttribute(SessionState.SELECTED_CHAT, Integer.valueOf(legacyChat));
+            response.sendRedirect(request.getContextPath() + "/app/chat");
+            return;
+        }
         int userId = userId(request);
         String role = role(request);
         try {
@@ -87,6 +100,12 @@ public final class ChatServlet extends HttpServlet {
             request.setAttribute("chats", chats);
             request.setAttribute("propiedadesChat", propertyDao.findPublic("", "", "", null));
             String selected = value(request, "id");
+            if (!selected.isEmpty()) {
+                request.getSession(true).setAttribute(SessionState.SELECTED_CHAT, Integer.valueOf(selected));
+            } else {
+                Integer selectedChat = SessionState.integerAttribute(request.getSession(false), SessionState.SELECTED_CHAT);
+                selected = selectedChat == null ? "" : String.valueOf(selectedChat);
+            }
             if (selected.isEmpty() && !chats.isEmpty()) selected = String.valueOf(chats.get(0).getId());
             if (!selected.isEmpty()) {
                 int chatId = Integer.parseInt(selected);
@@ -144,7 +163,9 @@ public final class ChatServlet extends HttpServlet {
     }
 
     private static void redirect(HttpServletResponse response, HttpServletRequest request,
-            int chatId, String query) throws IOException {
-        response.sendRedirect(request.getContextPath() + "/app/chat?id=" + chatId + "&" + query);
+            int chatId, String key, String message) throws IOException {
+        request.getSession(false).setAttribute(SessionState.SELECTED_CHAT, chatId);
+        SessionState.flash(request.getSession(false), key, message);
+        response.sendRedirect(request.getContextPath() + "/app/chat");
     }
 }

@@ -78,7 +78,8 @@ body {
 .auth-logo { width: 155px; height: 155px; object-fit: contain; border-radius: 1rem; }
 .property-card { border: 1px solid #e7edf2 !important; transition: transform .2s ease, box-shadow .2s ease; }
 .property-card:hover { transform: translateY(-5px); box-shadow: 0 1rem 2rem rgba(7, 16, 29, .13) !important; }
-.property-image-link { display: block; overflow: hidden; }
+.property-detail-form { margin: 0; }
+.property-image-link { display: block; width: 100%; padding: 0; border: 0; background: transparent; overflow: hidden; text-align: inherit; }
 .property-image-link img { transition: transform .35s ease, filter .35s ease; }
 .property-image-link:hover img, .property-image-link:focus img { transform: scale(1.04); filter: brightness(.92); }
 .property-card .card-body { padding: 1.25rem; }

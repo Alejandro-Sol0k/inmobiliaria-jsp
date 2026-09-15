@@ -36,9 +36,11 @@ src/main/webapp/
 
 - `inicio.jsp`: landing y propiedades destacadas.
 - `propiedades.jsp`: catálogo y filtros.
-- `propiedad.jsp?id=3`: detalle de una propiedad.
+- `propiedad.jsp`: detalle de una propiedad. El identificador viaja en la sesión y no se expone en la URL.
 - `auth/login.jsp`: inicio de sesión.
-- `auth/login.jsp?redirect=%2Fpropiedad.jsp%3Fid%3D3`: inicio de sesión y retorno al detalle solicitado.
+- `auth/login.jsp`: después de iniciar sesión se retorna automáticamente a la pantalla solicitada, sin parámetros visibles.
+
+La navegación pública usa rutas limpias. Los identificadores, filtros y mensajes temporales se envían mediante formularios POST y atributos de sesión; por eso las direcciones visibles no exponen datos internos ni parámetros de navegación.
 
 # Sprints
 

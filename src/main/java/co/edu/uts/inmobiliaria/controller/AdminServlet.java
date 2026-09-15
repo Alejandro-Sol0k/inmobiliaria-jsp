@@ -42,23 +42,23 @@ public final class AdminServlet extends HttpServlet {
                 int createdId = adminDao.createUser(email, password, value(request, "nombres"),
                         value(request, "apellidos"), value(request, "documento"), role);
                 auditDao.log(currentUserId(request), "CREAR_USUARIO", "usuario", String.valueOf(createdId), role);
-                redirect(response, request, "creado=ok");
+                redirect(response, request, "El usuario fue creado correctamente.");
             } else if ("rol".equals(action)) {
                 String role = value(request, "rol").toUpperCase();
                 if (!ROLES.contains(role)) throw new IllegalArgumentException("Rol no válido.");
                 adminDao.setRole(integer(request, "idUsuario"), role);
                 auditDao.log(currentUserId(request), "ASIGNAR_ROL", "usuario", value(request, "idUsuario"), role);
-                redirect(response, request, "rol=ok");
+                redirect(response, request, "El rol fue actualizado correctamente.");
             } else if ("estado".equals(action)) {
                 adminDao.toggleUser(integer(request, "idUsuario"), currentUserId(request));
                 auditDao.log(currentUserId(request), "CAMBIAR_ESTADO", "usuario", value(request, "idUsuario"), "Estado de cuenta actualizado");
-                redirect(response, request, "estado=ok");
+                redirect(response, request, "El estado de la cuenta fue actualizado.");
             } else if ("catalogo".equals(action)) {
                 String name = value(request, "nombre");
                 if (name.isEmpty()) throw new IllegalArgumentException("Escribe un nombre para el catálogo.");
                 adminDao.addCatalog(value(request, "catalogo"), name);
                 auditDao.log(currentUserId(request), "CREAR_CATALOGO", value(request, "catalogo"), null, name);
-                redirect(response, request, "catalogo=ok");
+                redirect(response, request, "El elemento fue agregado al catálogo.");
             } else throw new IllegalArgumentException("Acción no válida.");
         } catch (Exception exception) {
             request.setAttribute("errorAdmin", exception.getMessage() == null ? "No fue posible completar la acción." : exception.getMessage());
@@ -67,6 +67,7 @@ public final class AdminServlet extends HttpServlet {
     }
 
     private void loadPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("mensajeAdmin", SessionState.consumeFlash(request.getSession(false), "success"));
         try {
             request.setAttribute("usuarios", adminDao.findUsers());
             request.setAttribute("ciudades", adminDao.findCatalog("ciudad"));
@@ -91,5 +92,8 @@ public final class AdminServlet extends HttpServlet {
     private static int currentUserId(HttpServletRequest request) { return ((Number) request.getSession(false).getAttribute("usuarioId")).intValue(); }
     private static int integer(HttpServletRequest request, String name) { return Integer.parseInt(value(request, name)); }
     private static String value(HttpServletRequest request, String name) { String value = request.getParameter(name); return value == null ? "" : value.trim(); }
-    private static void redirect(HttpServletResponse response, HttpServletRequest request, String query) throws IOException { response.sendRedirect(request.getContextPath() + "/app/admin?" + query); }
+    private static void redirect(HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
+        SessionState.flash(request.getSession(false), "success", message);
+        response.sendRedirect(request.getContextPath() + "/app/admin");
+    }
 }

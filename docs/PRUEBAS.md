@@ -17,7 +17,8 @@
 | F02 | Registrar cliente con correo/documento nuevos | Se crea usuario, perfil y rol CLIENTE. |
 | F03 | Abrir `/inmobiliaria-jsp/auth/login.jsp` e iniciar sesión | Redirección a `/propiedades.jsp`. |
 | F04 | Filtrar por ciudad, tipo, operación y precio | Solo aparecen propiedades activas coincidentes. |
-| F05 | Abrir `/inmobiliaria-jsp/propiedad.jsp?id=3` o clicar una imagen del catálogo | Se abre el detalle de la propiedad. |
+| F05 | Clicar la imagen o el botón de detalle del catálogo | Se abre `/inmobiliaria-jsp/propiedad.jsp`, sin mostrar `?id=3`. |
+| F05b | Abrir una operación desde el detalle o iniciar sesión desde una propiedad | Se conserva la propiedad seleccionada usando sesión, sin `?redirect` ni identificadores visibles. |
 | F06 | Solicitar visita desde detalle | Operaciones abre con propiedad e imagen seleccionadas. |
 | F07 | Cambiar estado de cita | Solo se permiten transiciones válidas. |
 | F08 | Crear propiedad como Inmobiliaria | Se guarda imagen por URL o archivo y características. |

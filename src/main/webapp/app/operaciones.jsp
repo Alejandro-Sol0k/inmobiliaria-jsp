@@ -29,12 +29,8 @@
 <%@ include file="/WEB-INF/jspf/navegacion.jspf" %>
 <main class="container py-5">
     <div class="mb-4"><span class="section-kicker">Sprint 3 · Operación</span><h1 class="fw-bold mb-1">Citas y solicitudes</h1><p class="text-secondary mb-0"><%= esGestor ? "Administra las solicitudes y agenda de todos los clientes." : "Agenda visitas y envía solicitudes sobre las propiedades disponibles." %></p></div>
-    <% if ("ok".equals(request.getParameter("cita"))) { %><div class="alert alert-success">La cita fue solicitada correctamente.</div><% } %>
-    <% if ("ok".equals(request.getParameter("solicitud"))) { %><div class="alert alert-success">La solicitud fue radicada correctamente.</div><% } %>
-    <% if ("ok".equals(request.getParameter("actualizado"))) { %><div class="alert alert-success">El estado fue actualizado correctamente.</div><% } %>
-    <% if ("ok".equals(request.getParameter("documento"))) { %><div class="alert alert-success">El documento fue cargado correctamente.</div><% } %>
-    <% if ("actualizado".equals(request.getParameter("documento"))) { %><div class="alert alert-success">El estado del documento fue actualizado.</div><% } %>
-    <% if (request.getParameter("documentoError") != null) { %><div class="alert alert-danger">No fue posible cargar el documento. Usa PDF, JPG o PNG de máximo 8 MB.</div><% } %>
+    <% if (request.getAttribute("mensajeOperaciones") != null) { %><div class="alert alert-success"><%= request.getAttribute("mensajeOperaciones") %></div><% } %>
+    <% if (request.getAttribute("errorOperaciones") != null) { %><div class="alert alert-danger"><%= request.getAttribute("errorOperaciones") %></div><% } %>
     <% if (errorOperaciones != null) { %><div class="alert alert-danger"><%= errorOperaciones %></div><% } %>
 
     <div class="row g-4 mb-5">

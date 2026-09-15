@@ -15,6 +15,9 @@ public final class FavoriteServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("mensajeFavoritos", SessionState.consumeFlash(request.getSession(false), "success"));
+        String flashError = SessionState.consumeFlash(request.getSession(false), "error");
+        if (flashError != null) request.setAttribute("errorFavoritos", flashError);
         try {
             request.setAttribute("favoritos", favoriteDao.findByUserId(userId(request)));
         } catch (Exception exception) {
@@ -36,9 +39,11 @@ public final class FavoriteServlet extends HttpServlet {
             } else {
                 favoriteDao.add(userId(request), propertyId);
             }
-            response.sendRedirect(request.getContextPath() + "/app/favoritos?actualizado=ok");
+            SessionState.flash(request.getSession(false), "success", "Tus favoritos fueron actualizados.");
+            response.sendRedirect(request.getContextPath() + "/app/favoritos");
         } catch (Exception exception) {
-            response.sendRedirect(request.getContextPath() + "/app/favoritos?error=1");
+            SessionState.flash(request.getSession(false), "error", "No fue posible actualizar tus favoritos.");
+            response.sendRedirect(request.getContextPath() + "/app/favoritos");
         }
     }
 

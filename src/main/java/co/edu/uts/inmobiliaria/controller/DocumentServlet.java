@@ -38,7 +38,8 @@ public final class DocumentServlet extends HttpServlet {
                 }
                 documentDao.updateStatus(Integer.parseInt(value(request, "idDocumento")), status);
                 auditDao.log(userId(request), "CAMBIAR_ESTADO", "documento_solicitud", value(request, "idDocumento"), status);
-                response.sendRedirect(request.getContextPath() + "/app/operaciones?documento=actualizado");
+                SessionState.flash(request.getSession(false), "success", "El estado del documento fue actualizado.");
+                response.sendRedirect(request.getContextPath() + "/app/operaciones");
                 return;
             }
             Part file = request.getPart("archivo");
@@ -49,9 +50,11 @@ public final class DocumentServlet extends HttpServlet {
             documentDao.create(userId(request), Integer.parseInt(value(request, "idSolicitud")),
                     safeFileName(file.getSubmittedFileName()), fileUrl);
             auditDao.log(userId(request), "CARGAR", "documento_solicitud", value(request, "idSolicitud"), safeFileName(file.getSubmittedFileName()));
-            response.sendRedirect(request.getContextPath() + "/app/operaciones?documento=ok");
+            SessionState.flash(request.getSession(false), "success", "El documento fue cargado correctamente.");
+            response.sendRedirect(request.getContextPath() + "/app/operaciones");
         } catch (Exception exception) {
-            response.sendRedirect(request.getContextPath() + "/app/operaciones?documentoError=1");
+            SessionState.flash(request.getSession(false), "error", "No fue posible cargar el documento. Usa PDF, JPG o PNG de máximo 8 MB.");
+            response.sendRedirect(request.getContextPath() + "/app/operaciones");
         }
     }
 

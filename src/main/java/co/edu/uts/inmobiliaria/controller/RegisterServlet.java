@@ -36,7 +36,8 @@ public final class RegisterServlet extends HttpServlet {
         }
         try {
             userDao.registerClient(email, password, names, lastNames, document);
-            response.sendRedirect(request.getContextPath() + "/auth/login.jsp?registro=ok");
+            SessionState.flash(request.getSession(true), "success", "Cuenta creada. Ya puedes iniciar sesión.");
+            response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
         } catch (SQLException exception) {
             request.setAttribute("errorRegistro", exception.getErrorCode() == 1062
                     ? "El correo o documento ya se encuentra registrado."

@@ -47,11 +47,23 @@ public final class PropertyManagementServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         try {
             String action = value(request, "accion");
+            if ("editar".equals(action)) {
+                request.getSession(true).setAttribute(SessionState.EDIT_PROPERTY,
+                        Integer.valueOf(value(request, "idPropiedad")));
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+                return;
+            }
+            if ("cancelar".equals(action)) {
+                request.getSession(true).removeAttribute(SessionState.EDIT_PROPERTY);
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+                return;
+            }
             if ("desactivar".equals(action)) {
                 String propertyId = value(request, "idPropiedad");
                 propertyDao.deactivate(Integer.parseInt(propertyId));
                 auditDao.log(userId(request), "DESACTIVAR", "propiedad", propertyId, "Baja lógica de propiedad");
-                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?desactivada=ok");
+                SessionState.flash(request.getSession(false), "success", "La propiedad fue dada de baja lógicamente.");
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
                 return;
             }
             String imageUrl = value(request, "imagenUrl");
@@ -69,7 +81,9 @@ public final class PropertyManagementServlet extends HttpServlet {
                         decimal(request, "precio"), integer(request, "habitaciones"), integer(request, "banos"),
                         decimal(request, "area"), imageUrl, features);
                 auditDao.log(userId(request), "ACTUALIZAR", "propiedad", value(request, "idPropiedad"), value(request, "titulo"));
-                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?actualizada=ok");
+                request.getSession(false).removeAttribute(SessionState.EDIT_PROPERTY);
+                SessionState.flash(request.getSession(false), "success", "La publicación fue actualizada correctamente.");
+                response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
                 return;
             }
             propertyDao.create(value(request, "titulo"), value(request, "ciudad"), value(request, "tipo"),
@@ -77,7 +91,8 @@ public final class PropertyManagementServlet extends HttpServlet {
                     value(request, "descripcion"), decimal(request, "precio"), integer(request, "habitaciones"),
                     integer(request, "banos"), decimal(request, "area"), imageUrl, features);
             auditDao.log(userId(request), "CREAR", "propiedad", null, value(request, "titulo"));
-            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades?creada=ok");
+            SessionState.flash(request.getSession(false), "success", "La propiedad fue creada correctamente.");
+            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
         } catch (Exception exception) {
             request.setAttribute("errorGestion", exception.getMessage() == null
                     ? "No fue posible guardar la propiedad." : exception.getMessage());
@@ -87,10 +102,18 @@ public final class PropertyManagementServlet extends HttpServlet {
 
     private void loadPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("mensajeGestion", SessionState.consumeFlash(request.getSession(false), "success"));
+        String legacyEdit = value(request, "editar");
+        if (!legacyEdit.isEmpty()) {
+            request.getSession(true).setAttribute(SessionState.EDIT_PROPERTY, Integer.valueOf(legacyEdit));
+            response.sendRedirect(request.getContextPath() + "/app/gestion-propiedades");
+            return;
+        }
         try {
             List<Property> properties = propertyDao.findPublic("", "", "", null);
             request.setAttribute("propiedades", properties);
-            String editId = value(request, "editar");
+            Integer editSessionId = SessionState.integerAttribute(request.getSession(false), SessionState.EDIT_PROPERTY);
+            String editId = editSessionId == null ? value(request, "editar") : String.valueOf(editSessionId);
             if (!editId.isEmpty()) {
                 int propertyId = Integer.parseInt(editId);
                 for (Property property : properties) {

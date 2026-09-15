@@ -50,7 +50,7 @@ public final class OperationServlet extends HttpServlet {
                 operationDao.createAppointment(userId, integer(request, "idPropiedad"),
                         Timestamp.valueOf(dateTime), value(request, "observaciones"));
                 auditDao.log(userId, "CREAR", "cita", null, "Solicitud de visita para propiedad " + value(request, "idPropiedad"));
-                redirect(response, request, "cita=ok");
+                redirect(response, request, "success", "La cita fue solicitada correctamente.");
                 return;
             }
             if ("crearSolicitud".equals(action)) {
@@ -61,7 +61,7 @@ public final class OperationServlet extends HttpServlet {
                 }
                 operationDao.createRequest(userId, integer(request, "idPropiedad"), operationType);
                 auditDao.log(userId, "CREAR", "solicitud", null, "Solicitud de " + operationType + " para propiedad " + value(request, "idPropiedad"));
-                redirect(response, request, "solicitud=ok");
+                redirect(response, request, "success", "La solicitud fue radicada correctamente.");
                 return;
             }
             if (isManager(request) && "estadoCita".equals(action)) {
@@ -69,7 +69,7 @@ public final class OperationServlet extends HttpServlet {
                 updateStatus(status, APPOINTMENT_STATUSES);
                 operationDao.updateAppointmentStatus(integer(request, "idCita"), status);
                 auditDao.log(userId, "CAMBIAR_ESTADO", "cita", value(request, "idCita"), status);
-                redirect(response, request, "actualizado=ok");
+                redirect(response, request, "success", "El estado fue actualizado correctamente.");
                 return;
             }
             if (isManager(request) && "estadoSolicitud".equals(action)) {
@@ -77,7 +77,7 @@ public final class OperationServlet extends HttpServlet {
                 updateStatus(status, REQUEST_STATUSES);
                 operationDao.updateRequestStatus(integer(request, "idSolicitud"), status);
                 auditDao.log(userId, "CAMBIAR_ESTADO", "solicitud", value(request, "idSolicitud"), status);
-                redirect(response, request, "actualizado=ok");
+                redirect(response, request, "success", "El estado fue actualizado correctamente.");
                 return;
             }
             throw new IllegalArgumentException("Acción no válida.");
@@ -90,13 +90,27 @@ public final class OperationServlet extends HttpServlet {
 
     private void loadPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setAttribute("mensajeOperaciones", SessionState.consumeFlash(request.getSession(false), "success"));
+        String flashError = SessionState.consumeFlash(request.getSession(false), "error");
+        if (flashError != null) request.setAttribute("errorOperaciones", flashError);
+        String legacyProperty = value(request, "propiedad");
+        if (legacyProperty.isEmpty()) legacyProperty = value(request, "idPropiedad");
+        if (!legacyProperty.isEmpty()) {
+            request.getSession(true).setAttribute(SessionState.SELECTED_PROPERTY, Integer.valueOf(legacyProperty));
+            response.sendRedirect(request.getContextPath() + "/app/operaciones");
+            return;
+        }
         int userId = userId(request);
         boolean manager = isManager(request);
         try {
             request.setAttribute("propiedades", propertyDao.findPublic("", "", "", null));
             String selectedProperty = value(request, "propiedad");
-            if (selectedProperty.isEmpty()) {
-                selectedProperty = value(request, "idPropiedad");
+            if (selectedProperty.isEmpty()) selectedProperty = value(request, "idPropiedad");
+            if (!selectedProperty.isEmpty()) {
+                request.getSession(true).setAttribute(SessionState.SELECTED_PROPERTY, Integer.valueOf(selectedProperty));
+            } else {
+                Integer sessionProperty = SessionState.integerAttribute(request.getSession(false), SessionState.SELECTED_PROPERTY);
+                selectedProperty = sessionProperty == null ? "" : String.valueOf(sessionProperty);
             }
             request.setAttribute("propiedadSeleccionada", selectedProperty);
             request.setAttribute("citas", operationDao.findAppointments(userId, manager));
@@ -121,9 +135,10 @@ public final class OperationServlet extends HttpServlet {
         }
     }
 
-    private static void redirect(HttpServletResponse response, HttpServletRequest request, String query)
+    private static void redirect(HttpServletResponse response, HttpServletRequest request, String key, String message)
             throws IOException {
-        response.sendRedirect(request.getContextPath() + "/app/operaciones?" + query);
+        SessionState.flash(request.getSession(false), key, message);
+        response.sendRedirect(request.getContextPath() + "/app/operaciones");
     }
 
     private static boolean isManager(HttpServletRequest request) {

@@ -25,7 +25,7 @@
                         <p class="text-white-50">Mantén actualizada tu información para gestionar visitas, favoritos y solicitudes.</p>
                     </div>
                     <div class="col-lg-8 p-4 p-lg-5">
-                        <% if ("ok".equals(request.getParameter("actualizado"))) { %><div class="alert alert-success">Tu perfil fue actualizado correctamente.</div><% } %>
+                        <% if (request.getAttribute("mensajePerfil") != null) { %><div class="alert alert-success"><%= request.getAttribute("mensajePerfil") %></div><% } %>
                         <% if (request.getAttribute("errorPerfil") != null) { %><div class="alert alert-danger"><%= request.getAttribute("errorPerfil") %></div><% } %>
                         <form action="<%= request.getContextPath() %>/app/perfil" method="post" enctype="multipart/form-data" class="row g-3 profile-form">
                             <div class="col-md-6"><label class="form-label" for="nombres">Nombres</label><input class="form-control" id="nombres" name="nombres" value="<%= nombres %>" placeholder="Ej. Joel" required></div>
