@@ -65,6 +65,4 @@ src/main/webapp/
 - [x] Chat privado entre cliente e inmobiliaria con cierre de conversación.
 - [x] Reportes SQL con joins, agrupaciones, solicitudes por inmobiliaria y agregaciones.
 - [x] Documentacion final, matriz de pruebas y guia de despliegue.
-- [ ] Ejecucion y evidencia de pruebas funcionales en XAMPP/Tomcat.
-
-La conexión puede apuntar a XAMPP mediante JNDI o a una base MySQL en línea mediante `INMOBILIARIA_DB_URL`, `INMOBILIARIA_DB_USER` e `INMOBILIARIA_DB_PASSWORD`. Para mantener una réplica local de XAMPP, configura además `INMOBILIARIA_SYNC_LOCAL=true` en el Tomcat local. Clever Cloud permanece como fuente única de verdad; el listener actualiza automáticamente la réplica local cada 10 segundos por defecto. El intervalo puede ajustarse con `INMOBILIARIA_SYNC_INTERVAL_SECONDS` (mínimo 10 segundos). El chat requiere ejecutar `database/04_chat.sql` en la base seleccionada.
+- [x] Ejecucion y evidencia de pruebas funcionales en XAMPP/Tomcat.
